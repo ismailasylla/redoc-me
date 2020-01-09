@@ -11,14 +11,13 @@ export const headerCommonMixin = level => css`
   font-weight: ${({ theme }) => theme.typography.headings.fontWeight};
   font-size: ${headerFontSize[level]};
   line-height: ${({ theme }) => theme.typography.headings.lineHeight};
+  margin-top: -60px;
 `;
 
 export const H1 = styled.h1`
   ${headerCommonMixin(1)};
   color: ${({ theme }) => theme.colors.primary.main};
   ${extensionsHook('H1')};
-  margin-bottom: -10px;
-  margin-top: -3;
 `;
 
 export const H2 = styled.h2`
