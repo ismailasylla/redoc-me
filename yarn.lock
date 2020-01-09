@@ -8295,6 +8295,35 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
+redoc@^2.0.0-rc.20:
+  version "2.0.0-rc.20"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.20.tgz#f50721692fe36bf2214cf8af7d456bc640dcca3b"
+  integrity sha512-nk+6aiBTRatUJ4oc+K+o/oXSEeh0Q7P9qRD7UibRCANM5ymdu4mpoMlDAHpU7iYvwejKeSuQdxfOaxTSsRTCSw==
+  dependencies:
+    classnames "^2.2.6"
+    decko "^1.2.0"
+    dompurify "^2.0.7"
+    eventemitter3 "^4.0.0"
+    json-pointer "^0.6.0"
+    json-schema-ref-parser "^6.1.0"
+    lunr "2.3.8"
+    mark.js "^8.11.1"
+    marked "^0.7.0"
+    memoize-one "~5.1.1"
+    mobx-react "^6.1.4"
+    openapi-sampler "1.0.0-beta.15"
+    perfect-scrollbar "^1.4.0"
+    polished "^3.4.2"
+    prismjs "^1.17.1"
+    prop-types "^15.7.2"
+    react-dropdown "^1.6.4"
+    react-tabs "^3.0.0"
+    slugify "^1.3.6"
+    stickyfill "^1.1.1"
+    swagger2openapi "^5.3.1"
+    tslib "^1.10.0"
+    url-template "^2.0.8"
+
 reflect.ownkeys@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/reflect.ownkeys/-/reflect.ownkeys-0.2.0.tgz#749aceec7f3fdf8b63f927a04809e90c5c0b3460"

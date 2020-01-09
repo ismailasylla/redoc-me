@@ -16,8 +16,9 @@ export const headerCommonMixin = level => css`
 export const H1 = styled.h1`
   ${headerCommonMixin(1)};
   color: ${({ theme }) => theme.colors.primary.main};
-
   ${extensionsHook('H1')};
+  margin-bottom: -10px;
+  margin-top: -3;
 `;
 
 export const H2 = styled.h2`
