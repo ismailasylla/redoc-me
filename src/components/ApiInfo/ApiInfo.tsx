@@ -13,6 +13,7 @@ import {
   InfoSpan,
   InfoSpanBox,
   InfoSpanBoxWrap,
+  BackButton,
 } from './styled.elements';
 
 export interface ApiInfoProps {
@@ -25,6 +26,11 @@ export class ApiInfo extends React.Component<ApiInfoProps> {
     if (!e.target.href) {
       e.target.href = this.props.store.spec.info.downloadLink;
     }
+  };
+
+  // back button navigation
+  handlegoBack = () => {
+    window.history.back();
   };
 
   render() {
@@ -72,6 +78,7 @@ export class ApiInfo extends React.Component<ApiInfoProps> {
 
     return (
       <Section>
+        <BackButton onClick={this.handlegoBack}>Go Back</BackButton>
         <Row>
           <MiddlePanel className="api-info">
             <ApiHeader>
