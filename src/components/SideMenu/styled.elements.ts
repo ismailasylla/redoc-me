@@ -11,7 +11,7 @@ export const OperationBadge = styled.span.attrs((props: { type: string }) => ({
   display: inline-block;
   height: ${props => props.theme.typography.code.fontSize};
   line-height: ${props => props.theme.typography.code.fontSize};
-  background-color: #333;
+  background-color: #8a44aa;
   border-radius: 3px;
   background-repeat: no-repeat;
   background-position: 6px 4px;
@@ -152,7 +152,7 @@ export const MenuItemLabel = styled.label.attrs((props: MenuItemLabelType) => ({
   }
 `;
 
-export const MenuItemTitle = styled.span<{ width?: string }>`
+export const MenuItemTitle = styled.span<{ width: string }>`
   display: inline-block;
   vertical-align: middle;
   width: ${props => (props.width ? props.width : 'auto')};
