@@ -1,13 +1,1 @@
-#top-bar {
-  position: fixed;
-  z-index: 2;
-  top: 0;
-  right: 0;
-  left: 14rem;
-  display: -ms-flexbox;
-  display: flex;
-  border-bottom: 1px solid #edeef1;
-  background: #f8f9fa;
-  -ms-flex-align: center;
-  align-items: center;
-}
+

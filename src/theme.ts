@@ -99,11 +99,11 @@ const defaultTheme: ThemeInterface = {
     fontWeightRegular: '400',
     fontWeightBold: '600',
     fontWeightLight: '300',
-    fontFamily: 'Roboto, sans-serif',
+    fontFamily: 'Arial, Helvetica Neue, sans-serif',
     smoothing: 'antialiased',
     optimizeSpeed: true,
     headings: {
-      fontFamily: 'Montserrat, sans-serif',
+      fontFamily: 'Arial, Helvetica Neue, sans-serif',
       fontWeight: '400',
       lineHeight: '1.6em',
     },

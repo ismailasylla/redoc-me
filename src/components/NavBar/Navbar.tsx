@@ -1,6 +1,7 @@
 import * as React from 'react';
 import '../../components/Navbar/Navbar.css';
 import { BackButton } from '../ApiInfo/styled.elements';
+import { NextButton } from '../ApiInfo/styled.elements';
 
 export default class Navbar extends React.Component {
   // back button navigation
@@ -9,17 +10,23 @@ export default class Navbar extends React.Component {
   };
 
   render() {
-    // const btnStyle = {
-    //   overflow: 'hidden',
-    //   /* Set the navbar to fixed position */
-    //   top: '0',
-    //   /* Position the navbar at the top of the page */
-    //   width: '100%',
-    //   /* Full width */
-    // };
+    const backStyle = {
+      overflow: 'hidden',
+      /* Set the navbar to fixed position */
+      top: '4px',
+      position: 'fixed',
+      marginBottom: '10px',
+      textAlign: 'center',
+      display: 'inline-block',
+    };
     return (
-      <div>
-        <BackButton onClick={this.handlegoBack}>← Go Back</BackButton>
+      <div className="container">
+        <BackButton onClick={this.handlegoBack} style={backStyle}>
+          ← Go Back
+        </BackButton>
+        {/* <NextButton onClick={this.handlegoNextPage} style={nextStyle}>
+          Next Page →
+        </NextButton> */}
       </div>
     );
   }

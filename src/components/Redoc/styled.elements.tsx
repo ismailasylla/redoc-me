@@ -1,7 +1,7 @@
 import styled, { media } from '../../styled-components';
 
 export const RedocWrap = styled.div`
-  ${({ theme }) => `
+	${({ theme }) => `
   font-family: ${theme.typography.fontFamily};
   font-size: ${theme.typography.fontSize};
   font-weight: ${theme.typography.fontWeightRegular};
@@ -26,32 +26,32 @@ export const RedocWrap = styled.div`
 `;
 
 export const ApiContentWrap = styled.div`
-  z-index: 1;
-  position: relative;
-  overflow: hidden;
-  width: calc(100% - ${props => props.theme.menu.width});
-  ${media.lessThan('small', true)`
+	z-index: 1;
+	position: relative;
+	overflow: hidden;
+	width: calc(100% - ${(props) => props.theme.menu.width});
+	${media.lessThan('small', true)`
     width: 100%;
   `};
 
-  contain: layout;
+	contain: layout;
 `;
 
 export const BackgroundStub = styled.div`
-  background: ${({ theme }) => theme.rightPanel.backgroundColor};
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: ${({ theme }) => {
-    if (theme.rightPanel.width.endsWith('%')) {
-      const percents = parseInt(theme.rightPanel.width, 10);
-      return `calc((100% - ${theme.menu.width}) * ${percents / 100})`;
-    } else {
-      return theme.rightPanel.width;
-    }
-  }};
-  ${media.lessThan('medium', true)`
+	background: ${({ theme }) => theme.rightPanel.backgroundColor};
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: ${({ theme }) => {
+		if (theme.rightPanel.width.endsWith('%')) {
+			const percents = parseInt(theme.rightPanel.width, 10);
+			return `calc((100% - ${theme.menu.width}) * ${percents / 100})`;
+		} else {
+			return theme.rightPanel.width;
+		}
+	}};
+	${media.lessThan('medium', true)`
     display: none;
   `};
 `;

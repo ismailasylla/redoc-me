@@ -27,6 +27,21 @@ export const BackButton = styled.a`
   ${extensionsHook('BackButton')};
 `;
 
+export const NextButton = styled.a`
+  border: 1px solid ${props => props.theme.colors.primary.main};
+  color: ${props => props.theme.colors.primary.main};
+  font-weight: normal;
+  margin-left: 0.5em;
+  margin-bottom: 1.5em;
+  padding: 4px 8px 4px;
+  padding-bottom: 10px;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+
+  ${extensionsHook('NextButton')};
+`;
+
 export const DownloadButton = styled.a`
   border: 1px solid ${props => props.theme.colors.primary.main};
   color: ${props => props.theme.colors.primary.main};
