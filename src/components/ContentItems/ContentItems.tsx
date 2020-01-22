@@ -9,7 +9,7 @@ import { ContentItemModel } from '../../services/MenuBuilder';
 import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
-
+import { BackButton } from '../ApiInfo/styled.elements';
 @observer
 export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number }, IYoState> {
   constructor(props) {
@@ -25,29 +25,46 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; c
       count: index
     };
   }
+  handlePreviousPage = () =>{
+    let currentCount = 0;
+    if (this.state.count < this.props.items.length) {
+      currentCount = this.state.count - 1;
+    }
+    this.setState({ count: currentCount });
+  }
+
+  handleNextPage = () =>{
+    let currentCount = 0;
+    if (this.state.count < this.props.items.length) {
+      currentCount = this.state.count + 1;
+    }
+    this.setState({ count: currentCount })
+  }
   render() {
     const items = this.props.items;
     if (items.length === 0) {
       return null;
     }
+
     const nextStyle = {
-			overflow: 'hidden',
-			/* Set the navbar to fixed position */
-			top: '4px',
-			// position: 'fixed',
-			display: 'inline-block',
-			marginLeft: '590px'
-		};
+        overflow: 'hidden',
+        top: '4px',
+        display: 'inline-block',
+        marginLeft: '590px'
+    };
+      const backStyle = {
+        overflow: 'hidden',
+        top: '4px',
+        position: 'fixed',
+        marginBottom: '10px',
+        textAlign: 'center',
+			  display: 'inline-block'
+    };
     return (
       <div>
         <ContentItem item={items[this.state.count]} key={items[this.state.count].id} />
-        <NextButton style={nextStyle} onClick={() => {
-          let currentCount = 0;
-          if (this.state.count < this.props.items.length) {
-            currentCount = this.state.count + 1;
-          }
-          this.setState({ count: currentCount })
-        }}> Next Page →</NextButton>
+        <BackButton 	style={backStyle}onClick={this.handlePreviousPage  }>← Go Back </BackButton>
+        <NextButton style={nextStyle} onClick={this.handleNextPage }>Next Page →</NextButton>
       </div >
     );
   }
