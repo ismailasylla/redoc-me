@@ -8,17 +8,27 @@ import { H1, H2, MiddlePanel, Row, Section, ShareLink } from '../../common-eleme
 import { ContentItemModel } from '../../services/MenuBuilder';
 import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
+import { NextButton } from '../ApiInfo/styled.elements';
 
 @observer
 export class ContentItems extends React.Component<{
+
   items: ContentItemModel[];
 }> {
+  state = {
+    count: 0
+  }
+
+   handleClick = () => {
+    this.setState({count: this.state.count + 1});
+    console.log('clicked')
+  }
   render() {
     const items = this.props.items;
     if (items.length === 0) {
       return null;
     }
-    return items.map(item => <ContentItem item={item} key={item.id} />);
+    return <ContentItem item={items[this.state.count]} key={items[this.state.count ].id} />;
   }
 }
 
@@ -64,10 +74,19 @@ const middlePanelWrap = component => <MiddlePanel compact={true}>{component}</Mi
 
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
+  handleClick: ((event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void) | undefined;
   render() {
     const { name, description, externalDocs, level } = this.props.item as GroupModel;
 
     const Header = level === 2 ? H2 : H1;
+    const nextStyle = {
+			overflow: 'hidden',
+			/* Set the navbar to fixed position */
+			top: '4px',
+			// position: 'fixed',
+			display: 'inline-block',
+			marginLeft: '590px'
+		};
     return (
       <>
         <Row>
@@ -79,6 +98,9 @@ export class SectionItem extends React.Component<ContentItemProps> {
           </MiddlePanel>
         </Row>
         <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} />
+           <NextButton onClick={this.handleClick} style={nextStyle}>
+           Next Page →
+         </NextButton>
         {externalDocs && (
           <Row>
             <MiddlePanel>

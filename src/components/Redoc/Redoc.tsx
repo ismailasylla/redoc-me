@@ -14,70 +14,55 @@ import { ApiContentWrap, BackgroundStub, RedocWrap } from './styled.elements';
 
 import { SearchBox } from '../SearchBox/SearchBox';
 import { StoreProvider } from '../StoreBuilder';
-import { NextButton } from '../ApiInfo/styled.elements';
 
 export interface RedocProps {
-  store: AppStore;
+	store: AppStore;
 }
 
 export class Redoc extends React.Component<RedocProps> {
-  static propTypes = {
-    store: PropTypes.instanceOf(AppStore).isRequired,
-  };
+	static propTypes = {
+		store: PropTypes.instanceOf(AppStore).isRequired
+	};
 
-  componentDidMount() {
-    this.props.store.onDidMount();
-  }
+	componentDidMount() {
+		this.props.store.onDidMount();
+	}
 
-  componentWillUnmount() {
-    this.props.store.dispose();
-  }
+	componentWillUnmount() {
+		this.props.store.dispose();
+	}
 
-  render() {
-    const {
-      store: { spec, menu, options, search, marker },
-    } = this.props;
-    const store = this.props.store;
-    const nextStyle = {
-      overflow: 'hidden',
-      /* Set the navbar to fixed position */
-      top: '4px',
-      // position: 'fixed',
-      display: 'inline-block',
-      marginLeft: '590px',
-    };
-    // fucntion to handle routing to the next page
+	render() {
+		const { store: { spec, menu, options, search, marker } } = this.props;
+		const store = this.props.store;
 
-    return (
-      <ThemeProvider theme={options.theme}>
-        <StoreProvider value={this.props.store}>
-          <OptionsProvider value={options}>
-            <RedocWrap className="redoc-wrap">
-              <StickyResponsiveSidebar menu={menu} className="menu-content">
-                <ApiLogo info={spec.info} />
-                {(!options.disableSearch && (
-                  <SearchBox
-                    search={search!}
-                    marker={marker}
-                    getItemById={menu.getItemById}
-                    onActivate={menu.activateAndScroll}
-                  />
-                )) ||
-                  null}
-                <SideMenu menu={menu} />
-              </StickyResponsiveSidebar>
-              <ApiContentWrap className="api-content">
-                <ApiInfo store={store} />
-                <ContentItems items={menu.items as any} />
-                <NextButton onClick={this.nextPage} style={nextStyle}>
-                  Next Page →
-                </NextButton>
-              </ApiContentWrap>
-              <BackgroundStub />
-            </RedocWrap>
-          </OptionsProvider>
-        </StoreProvider>
-      </ThemeProvider>
-    );
-  }
+		return (
+			<ThemeProvider theme={options.theme}>
+				<StoreProvider value={this.props.store}>
+					<OptionsProvider value={options}>
+						<RedocWrap className="redoc-wrap">
+							<StickyResponsiveSidebar menu={menu} className="menu-content">
+								<ApiLogo info={spec.info} />
+								{(!options.disableSearch && (
+									<SearchBox
+										search={search!}
+										marker={marker}
+										getItemById={menu.getItemById}
+										onActivate={menu.activateAndScroll}
+									/>
+								)) ||
+									null}
+								<SideMenu menu={menu} />
+							</StickyResponsiveSidebar>
+							<ApiContentWrap className="api-content">
+								<ApiInfo store={store} />
+								<ContentItems items={menu.items as any} />
+							</ApiContentWrap>
+							<BackgroundStub />
+						</RedocWrap>
+					</OptionsProvider>
+				</StoreProvider>
+			</ThemeProvider>
+		);
+	}
 }
