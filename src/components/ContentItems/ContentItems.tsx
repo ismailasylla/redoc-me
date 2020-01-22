@@ -11,29 +11,55 @@ import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 
 @observer
-export class ContentItems extends React.Component<{
+export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number }, IYoState> {
+  constructor(props) {
+    super(props);
 
-  items: ContentItemModel[];
-}> {
-  state = {
-    count: 0
-  }
+    let index = 0;
 
-   handleClick = () => {
-    this.setState({count: this.state.count + 1});
-    console.log('clicked')
+    if (this.props.count && this.props.count <= this.props.items.length) {
+      index = this.props.count;
+    }
+
+    this.state = {
+      count: index
+    };
   }
   render() {
     const items = this.props.items;
     if (items.length === 0) {
       return null;
     }
-    return <ContentItem item={items[this.state.count]} key={items[this.state.count ].id} />;
+    const nextStyle = {
+			overflow: 'hidden',
+			/* Set the navbar to fixed position */
+			top: '4px',
+			// position: 'fixed',
+			display: 'inline-block',
+			marginLeft: '590px'
+		};
+    return (
+      <div>
+        <ContentItem item={items[this.state.count]} key={items[this.state.count].id} />
+        <NextButton style={nextStyle} onClick={() => {
+          let currentCount = 0;
+          if (this.state.count < this.props.items.length) {
+            currentCount = this.state.count + 1;
+          }
+          this.setState({ count: currentCount })
+        }}> Next Page →</NextButton>
+      </div >
+    );
   }
 }
 
+
+
 export interface ContentItemProps {
   item: ContentItemModel;
+}
+export interface IYoState {
+  count: number;
 }
 
 @observer
@@ -64,7 +90,7 @@ export class ContentItem extends React.Component<ContentItemProps> {
             {content}
           </Section>
         )}
-        {item.items && <ContentItems items={item.items} />}
+        {item.items && <ContentItems items={item.items} count={0} />}
       </>
     );
   }
@@ -74,19 +100,11 @@ const middlePanelWrap = component => <MiddlePanel compact={true}>{component}</Mi
 
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
-  handleClick: ((event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void) | undefined;
   render() {
     const { name, description, externalDocs, level } = this.props.item as GroupModel;
 
     const Header = level === 2 ? H2 : H1;
-    const nextStyle = {
-			overflow: 'hidden',
-			/* Set the navbar to fixed position */
-			top: '4px',
-			// position: 'fixed',
-			display: 'inline-block',
-			marginLeft: '590px'
-		};
+
     return (
       <>
         <Row>
@@ -98,9 +116,6 @@ export class SectionItem extends React.Component<ContentItemProps> {
           </MiddlePanel>
         </Row>
         <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} />
-           <NextButton onClick={this.handleClick} style={nextStyle}>
-           Next Page →
-         </NextButton>
         {externalDocs && (
           <Row>
             <MiddlePanel>
