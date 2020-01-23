@@ -14,12 +14,21 @@ import { ApiContentWrap, BackgroundStub, RedocWrap } from './styled.elements';
 
 import { SearchBox } from '../SearchBox/SearchBox';
 import { StoreProvider } from '../StoreBuilder';
+import { ShowInfo } from '../ApiInfo/styled.elements';
 
 export interface RedocProps {
 	store: AppStore;
 }
 
 export class Redoc extends React.Component<RedocProps> {
+	state = {
+		showInfo: true
+	};
+
+	handleShowInfo = () => {
+		this.setState({ showInfo: !this.state.showInfo });
+	};
+
 	static propTypes = {
 		store: PropTypes.instanceOf(AppStore).isRequired
 	};
@@ -55,8 +64,9 @@ export class Redoc extends React.Component<RedocProps> {
 								<SideMenu menu={menu} />
 							</StickyResponsiveSidebar>
 							<ApiContentWrap className="api-content">
-								<ApiInfo store={store} />
+								{this.state.showInfo && <ApiInfo store={store} />}
 								<ContentItems items={menu.items as any} count={0} />
+								<ShowInfo onClick={this.handleShowInfo}>ToogleInfo</ShowInfo>
 							</ApiContentWrap>
 							<BackgroundStub />
 						</RedocWrap>

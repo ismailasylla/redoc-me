@@ -8,7 +8,7 @@ import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocument
 import { Markdown } from '../Markdown/Markdown';
 import { StyledMarkdownBlock } from '../Markdown/styled.elements';
 import { ApiHeader, DownloadButton, InfoSpan, InfoSpanBox, InfoSpanBoxWrap } from './styled.elements';
-// import Navbar from '../NavBar/Navbar';
+// import { ShowInfo } from '../ApiInfo/styled.elements';
 
 export interface ApiInfoProps {
 	store: AppStore;
@@ -16,6 +16,12 @@ export interface ApiInfoProps {
 
 @observer
 export class ApiInfo extends React.Component<ApiInfoProps> {
+	// handle ShowInfo helper...
+
+	// handleShowInfo = () => {
+	// 	this.setState({ showInfo: !this.props.showInfo });
+	// };
+
 	handleDownloadClick = (e) => {
 		if (!e.target.href) {
 			e.target.href = this.props.store.spec.info.downloadLink;
@@ -73,6 +79,7 @@ export class ApiInfo extends React.Component<ApiInfoProps> {
 						<ApiHeader>
 							{info.title} {version}
 						</ApiHeader>
+						{/* <ShowInfo onClick={this.handleShowInfo}> Hide Info</ShowInfo> */}
 						{!hideDownloadButton && (
 							<p>
 								Download OpenAPI specification:

@@ -11,7 +11,7 @@ import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
 @observer
-export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number }, IYoState> {
+export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number}, IYoState> {
   constructor(props) {
     super(props);
 
@@ -63,14 +63,12 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; c
     return (
       <div>
         <ContentItem item={items[this.state.count]} key={items[this.state.count].id} />
-        <BackButton 	style={backStyle}onClick={this.handlePreviousPage  }>← Go Back </BackButton>
+        <BackButton style={backStyle}onClick={this.handlePreviousPage  }>← Go Back </BackButton>
         <NextButton style={nextStyle} onClick={this.handleNextPage }>Next Page →</NextButton>
       </div >
     );
   }
 }
-
-
 
 export interface ContentItemProps {
   item: ContentItemModel;
