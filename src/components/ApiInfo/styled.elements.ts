@@ -47,7 +47,7 @@ export const NextButton = styled.a`
 	border-image: initial;
 	padding: 5px 10px;
 	border-radius: 5px;
-	margin-left: 550px;
+	margin-left: 270px;
 	@media (max-width: 750px) and (min-width: 400px) {
 		position: 'center';
 		margin-left: 200px;
