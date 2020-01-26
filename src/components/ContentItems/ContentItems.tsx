@@ -10,6 +10,7 @@ import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
+import {Link, BrowserRouter} from 'react-router-dom';
 @observer
 export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number}, IYoState> {
   constructor(props) {
@@ -45,26 +46,31 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; c
     if (items.length === 0) {
       return null;
     }
-
-    const nextStyle = {
-        overflow: 'hidden',
-        top: '4px',
-        display: 'inline-block',
-        marginLeft: '590px'
-    };
       const backStyle = {
         overflow: 'hidden',
         top: '4px',
         position: 'fixed',
         marginBottom: '10px',
         textAlign: 'center',
-			  display: 'inline-block'
+        display: 'inline-block',
+        cursor: 'pointer',
+        color: 'rgb(50, 50, 159)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgb(50, 50, 159)',
+        borderImage: 'initial',
+        padding: '5px 10px',
+        borderRadius: '5px',
     };
     return (
       <div>
+       < BrowserRouter>
         <ContentItem item={items[this.state.count]} key={items[this.state.count].id} />
         <BackButton style={backStyle}onClick={this.handlePreviousPage  }>← Go Back </BackButton>
-        <NextButton style={nextStyle} onClick={this.handleNextPage }>Next Page →</NextButton>
+        <Link to="/home">
+        <NextButton  onClick={this.handleNextPage }>Next Page →</NextButton>
+        </Link>
+        </BrowserRouter>
       </div >
     );
   }

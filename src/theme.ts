@@ -126,6 +126,7 @@ const defaultTheme: ThemeInterface = {
     width: '260px',
     backgroundColor: 'rgba(114, 47, 170, 0.84)',
     textColor: 'white',
+    backgroundImage:'linear-gradient(150deg, rgb(142, 68, 173) 0px, rgb(40, 58, 99) 100%)',
 
     activeTextColor: theme =>
       theme.menu.textColor !== defaultTheme.menu!.textColor
@@ -300,6 +301,8 @@ export interface ResolvedThemeInterface {
   menu: {
     width: string;
     backgroundColor: string;
+    backgroundImage: string;
+    background:string;
     textColor: string;
     activeTextColor: string;
     groupItems: {

@@ -14,7 +14,7 @@ export class SideMenu extends React.Component<{ menu: MenuStore; className?: str
 
 	render() {
 		const MenuStyle = {
-			backgroundImage: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(114,47,170,0.84) 100%, rgba(0,212,255,1) 100%)',
+			backgroundImage: 'linear-gradient(150deg, rgb(142, 68, 173) 0px, rgb(40, 58, 99) 100%)',
 			fontWeight: 'bold'
 		};
 		const store = this.props.menu;

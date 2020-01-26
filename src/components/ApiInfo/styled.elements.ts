@@ -33,11 +33,25 @@ export const NextButton = styled.a`
 	font-weight: normal;
 	margin-left: 0.5em;
 	margin-bottom: 1.5em;
-	padding: 4px 8px 4px;
-	padding-bottom: 10px;
+	margin-top: 1.5em;
+	padding: 4px 8px 4px 10px;
+
 	display: inline-block;
 	text-decoration: none;
 	cursor: pointer;
+	display: inline-block;
+	color: rgb(50, 50, 159);
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgb(50, 50, 159);
+	border-image: initial;
+	padding: 5px 10px;
+	border-radius: 5px;
+	margin-left: 550px;
+	@media (max-width: 750px) and (min-width: 400px) {
+		position: 'center';
+		margin-left: 200px;
+	}
 
 	${extensionsHook('NextButton')};
 `;

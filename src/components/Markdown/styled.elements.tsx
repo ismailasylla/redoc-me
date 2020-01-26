@@ -5,29 +5,29 @@ import styled, { css, extensionsHook, ResolvedThemeInterface } from '../../style
 import { StyledComponent } from 'styled-components';
 
 export const linksCss = css`
-  a {
-    text-decoration: none;
-    color: ${props => props.theme.typography.links.color};
+	a {
+		text-decoration: none;
+		color: ${(props) => props.theme.typography.links.color};
 
-    &:visited {
-      color: ${props => props.theme.typography.links.visited};
-    }
+		&:visited {
+			color: ${(props) => props.theme.typography.links.visited};
+		}
 
-    &:hover {
-      color: ${props => props.theme.typography.links.hover};
-    }
-  }
+		&:hover {
+			color: ${(props) => props.theme.typography.links.hover};
+		}
+	}
 `;
 
 export const StyledMarkdownBlock = styled(PrismDiv as StyledComponent<
-  'div',
-  ResolvedThemeInterface,
-  { compact?: boolean; inline?: boolean }
+	'div',
+	ResolvedThemeInterface,
+	{ compact?: boolean; inline?: boolean }
 >)`
 
-  font-family: ${props => props.theme.typography.fontFamily};
-  font-weight: ${props => props.theme.typography.fontWeightRegular};
-  line-height: ${props => props.theme.typography.lineHeight};
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-weight: ${(props) => props.theme.typography.fontWeightRegular};
+  line-height: ${(props) => props.theme.typography.lineHeight};
 
   p {
     &:last-child {
@@ -36,8 +36,8 @@ export const StyledMarkdownBlock = styled(PrismDiv as StyledComponent<
   }
 
   ${({ compact }) =>
-    compact &&
-    `
+		compact &&
+		`
     p:first-child {
       margin-top: 0;
     }
@@ -47,42 +47,42 @@ export const StyledMarkdownBlock = styled(PrismDiv as StyledComponent<
   `}
 
   ${({ inline }) =>
-    inline &&
-    ` p {
+		inline &&
+		` p {
     display: inline-block;
   }`}
 
   h1 {
     ${headerCommonMixin(1)};
-    color: ${props => props.theme.colors.primary.main};
+    color: ${(props) => props.theme.colors.primary.main};
     margin-top: 0;
   }
 
   h2 {
     ${headerCommonMixin(2)};
-    color: ${props => props.theme.colors.text.primary};
+    color: ${(props) => props.theme.colors.text.primary};
   }
 
   code {
     color: ${({ theme }) => theme.typography.code.color};
     background-color: ${({ theme }) => theme.typography.code.backgroundColor};
 
-    font-family: ${props => props.theme.typography.code.fontFamily};
+    font-family: ${(props) => props.theme.typography.code.fontFamily};
     border-radius: 2px;
     border: 1px solid rgba(38, 50, 56, 0.1);
     padding: 0 ${({ theme }) => theme.spacing.unit}px;
-    font-size: ${props => props.theme.typography.code.fontSize};
+    font-size: ${(props) => props.theme.typography.code.fontSize};
     font-weight: ${({ theme }) => theme.typography.code.fontWeight};
 
     word-break: break-word;
   }
 
   pre {
-    font-family: ${props => props.theme.typography.code.fontFamily};
+    font-family: ${(props) => props.theme.typography.code.fontFamily};
     white-space:${({ theme }) => (theme.typography.code.wrap ? 'pre-wrap' : 'pre')};
     background-color: #263238;
     color: white;
-    padding: ${props => props.theme.spacing.unit * 4}px;
+    padding: ${(props) => props.theme.spacing.unit * 4}px;
     overflow-x: auto;
     line-height: normal;
     border-radius: 0px
