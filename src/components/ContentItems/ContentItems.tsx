@@ -178,9 +178,6 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
       return null;
     }
 
-    const prevStyle = { position: 'fixed', overflow: 'hidden', top: 0, marginTop: 5, marginLeft: 40 } as React.CSSProperties;
-    const nextStyle = { position: 'absolute', display: 'inline-block', marginLeft: '40px', bottom: '10px' } as React.CSSProperties;
-
     return (
       <div>
         {!this.state.isFirstItem ? <BackButton  onClick={this.prevPage}>←  Back to <b>{this.getPrevPageName()}</b></BackButton > : null}
