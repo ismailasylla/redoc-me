@@ -5,7 +5,6 @@ import { ThemeProvider } from '../../styled-components';
 import { OptionsProvider } from '../OptionsProvider';
 
 import { AppStore } from '../../services';
-import { ApiInfo } from '../ApiInfo/';
 import { ApiLogo } from '../ApiLogo/ApiLogo';
 import { ContentItems } from '../ContentItems/ContentItems';
 import { SideMenu } from '../SideMenu/SideMenu';
@@ -14,20 +13,25 @@ import { ApiContentWrap, BackgroundStub, RedocWrap } from './styled.elements';
 
 import { SearchBox } from '../SearchBox/SearchBox';
 import { StoreProvider } from '../StoreBuilder';
-import { ShowInfo } from '../ApiInfo/styled.elements';
+
+import { ContentItemModel } from '../../services/MenuBuilder';
 
 export interface RedocProps {
 	store: AppStore;
 }
 
-export class Redoc extends React.Component<RedocProps> {
-	state = {
-		showInfo: true
-	};
+export class Redoc extends React.Component<RedocProps, RedocState> {
+	constructor(props) {
+		super(props);
 
-	handleShowInfo = () => {
-		this.setState({ showInfo: !this.state.showInfo });
-	};
+		this.state = {
+			item: this.props.store.menu.items[0] as any
+		};
+	}
+
+	componentDidUpdate() {
+		this.props.store.menu.activateAndScroll(this.state.item, true);
+	}
 
 	static propTypes = {
 		store: PropTypes.instanceOf(AppStore).isRequired
@@ -40,6 +44,10 @@ export class Redoc extends React.Component<RedocProps> {
 	componentWillUnmount() {
 		this.props.store.dispose();
 	}
+
+	onMenuItemClick = (menuItem) => {
+		this.setState({ item: menuItem });
+	};
 
 	render() {
 		const { store: { spec, menu, options, search, marker } } = this.props;
@@ -61,12 +69,10 @@ export class Redoc extends React.Component<RedocProps> {
 									/>
 								)) ||
 									null}
-								<SideMenu menu={menu} />
+								<SideMenu menu={menu} onItemClick={this.onMenuItemClick} />
 							</StickyResponsiveSidebar>
 							<ApiContentWrap className="api-content">
-								{this.state.showInfo && <ApiInfo store={store} />}
-								<ContentItems items={menu.items as any} />
-								<ShowInfo onClick={this.handleShowInfo}>ToogleInfo</ShowInfo>
+								<ContentItems items={menu.items as any} index={0} item={this.state.item} store={store} />
 							</ApiContentWrap>
 							<BackgroundStub />
 						</RedocWrap>
@@ -75,4 +81,8 @@ export class Redoc extends React.Component<RedocProps> {
 			</ThemeProvider>
 		);
 	}
+}
+
+export interface RedocState {
+	item: ContentItemModel;
 }

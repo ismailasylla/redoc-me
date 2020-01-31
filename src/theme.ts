@@ -131,7 +131,8 @@ const defaultTheme: ThemeInterface = {
     activeTextColor: theme =>
       theme.menu.textColor !== defaultTheme.menu!.textColor
         ? theme.menu.textColor
-        : theme.colors.primary.main,
+        // : theme.colors.primary.main,
+        : 'white',
     groupItems: {
       textTransform: 'uppercase',
     },

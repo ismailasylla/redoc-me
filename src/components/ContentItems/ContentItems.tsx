@@ -1,5 +1,7 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
+import { ApiInfo } from '../ApiInfo/';
+import { AppStore } from '../../services';
 
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';
 import { AdvancedMarkdown } from '../Markdown/AdvancedMarkdown';
@@ -10,68 +12,185 @@ import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
-import {Link, BrowserRouter} from 'react-router-dom';
+// import {Link, BrowserRouter} from 'react-router-dom';
+
 @observer
-export class ContentItems extends React.Component<{ items: ContentItemModel[]; count: number}, IYoState> {
+export class ContentItems extends React.Component<{ items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore }, IYoState> {
   constructor(props) {
     super(props);
 
     let index = 0;
+    if (this.props.index && this.props.index <= this.props.items.length) {
+      index = this.props.index;
+    }
 
-    if (this.props.count && this.props.count <= this.props.items.length) {
-      index = this.props.count;
+    let tempItems: ContentItemModel[] = [];
+
+    for (let i = 0; i < this.props.items.length; i++) {
+      if (this.props.items[i].type === 'group') {
+        for (let j = 0; j < this.props.items[i].items.length; j++) {
+          tempItems.push(this.props.items[i].items[j]);
+        }
+      }
+      else {
+        tempItems.push(this.props.items[i]);
+      }
     }
 
     this.state = {
-      count: index
+      items: tempItems,
+      index: index,
+      isLastItem: false,
+      isFirstItem: true,
+      sectionsCount: this.getNextSectionsCount(index, tempItems),
     };
   }
-  handlePreviousPage = () =>{
-    let currentCount = 0;
-    if (this.state.count < this.props.items.length) {
-      currentCount = this.state.count - 1;
+
+  componentDidUpdate() {
+    if (window.scrollY < 1) {
+      window.scrollTo(0, 40);
     }
-    this.setState({ count: currentCount });
+    window.scrollTo(0, 0);
   }
 
-  handleNextPage = () =>{
-    let currentCount = 0;
-    if (this.state.count < this.props.items.length) {
-      currentCount = this.state.count + 1;
+  componentWillReceiveProps(props) {
+    let item = props.item;
+    if (props.item.type === 'operation') {
+      item = props.item.parent;
     }
-    this.setState({ count: currentCount })
+
+    let index = this.getItemIndex(item);
+    let isFirstItem = false;
+    let isLastItem = false;
+
+    if (index === 0) {
+      isFirstItem = true;
+    }
+    if (index + 1 === this.state.items.length) {
+      isLastItem = true;
+    }
+    this.setState({ index: index, isLastItem: isLastItem, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(index, this.state.items) })
   }
+
+  getItemIndex = (item) => {
+    let index = 0;
+    for (let i = 0; i < this.state.items.length; i++) {
+      if (item.id === this.state.items[i].id) {
+        break;
+      }
+      index++;
+    }
+    return index;
+  }
+
+  getNextSectionsCount = (currentCount, items) => {
+    let multipleSections = 0;
+    if (items[currentCount].type === 'section') {
+      multipleSections++;
+      for (let i = currentCount; i < items.length; i++) {
+        if (items[i + 1].type === 'section') {
+          multipleSections++;
+        }
+        else {
+          break;
+        }
+      }
+    }
+    return multipleSections;
+  }
+
+  getPrevSectionsCount = (currentCount) => {
+    let multipleSections = 0;
+    if (!this.state.isFirstItem) {
+      for (let i = currentCount; i > 0; i--) {
+        if (this.state.items[i - 1].type === 'section') {
+          multipleSections++;
+        }
+        else {
+          break;
+        }
+      }
+    }
+    return multipleSections;
+  }
+
+  prevPage = () => {
+    let currentCount = 0;
+    let isFirstItem = false;
+    if (this.state.index > 0) {
+      currentCount = this.state.index - 1;
+    }
+    let prevCount = this.getPrevSectionsCount(this.state.index);
+    if (prevCount > 0) {
+      currentCount = currentCount - prevCount + 1;
+    }
+    if (currentCount === 0) {
+      isFirstItem = true;
+    }
+    this.setState({ index: currentCount, isLastItem: false, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
+  }
+
+  nextPage = () => {
+    let currentCount = 0;
+    let isLastItem = false;
+
+    if (this.state.index < this.state.items.length) {
+      currentCount = this.state.index + 1;
+    }
+    if (this.state.sectionsCount > 0) {
+      currentCount = currentCount + this.state.sectionsCount - 1;
+    }
+    if (currentCount + 1 === this.state.items.length) {
+      isLastItem = true;
+    }
+
+    this.setState({ index: currentCount, isLastItem: isLastItem, isFirstItem: false, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
+  }
+
+  createSections = () => {
+    let sections: JSX.Element[] = [];
+    for (let i = 0; i < this.state.sectionsCount; i++) {
+      sections.push(<ContentItem item={this.state.items[this.state.index + i]} key={this.state.items[this.state.index + i].id} />);
+    }
+    return sections;
+  }
+
+  getNextPageName = () => {
+    let nextCount = this.state.index + 1;
+    if (this.state.sectionsCount > 0) {
+      nextCount = nextCount + this.state.sectionsCount - 1;
+    }
+    return this.state.items[nextCount].name;;
+  }
+
+  getPrevPageName = () => {
+    let prevCount = this.state.index - 1;
+    let prevSectionsCount = this.getPrevSectionsCount(this.state.index);
+    if (prevSectionsCount > 0) {
+      prevCount = prevCount - prevSectionsCount + 1;
+    }
+    return this.state.items[prevCount].name;
+  }
+
   render() {
-    const items = this.props.items;
+    const items = this.state.items;
     if (items.length === 0) {
       return null;
     }
-      const backStyle = {
-        overflow: 'hidden',
-        top: '4px',
-        position: 'fixed',
-        marginBottom: '10px',
-        textAlign: 'center',
-        display: 'inline-block',
-        cursor: 'pointer',
-        color: 'rgb(50, 50, 159)',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(50, 50, 159)',
-        borderImage: 'initial',
-        padding: '5px 10px',
-        borderRadius: '5px',
-    };
+
+    const prevStyle = { position: 'fixed', overflow: 'hidden', top: 0, marginTop: 5, marginLeft: 40 } as React.CSSProperties;
+    const nextStyle = { position: 'absolute', display: 'inline-block', marginLeft: '40px', bottom: '10px' } as React.CSSProperties;
+
     return (
       <div>
-       < BrowserRouter>
-        <ContentItem item={items[this.state.count]} key={items[this.state.count].id} />
-        <BackButton style={backStyle}onClick={this.handlePreviousPage  }>← Go Back </BackButton>
-        <Link to="/home">
-        <NextButton  onClick={this.handleNextPage }>Next Page →</NextButton>
-        </Link>
-        </BrowserRouter>
-      </div >
+        {!this.state.isFirstItem ? <BackButton  onClick={this.prevPage}>←  Back to <b>{this.getPrevPageName()}</b></BackButton > : null}
+
+        {this.state.isFirstItem ? <ApiInfo store={this.props.store}></ApiInfo> : null}
+
+        {this.state.sectionsCount > 0 ? this.createSections() : <ContentItem item={items[this.state.index]} key={items[this.state.index].id} />}
+
+        {!this.state.isLastItem ? <NextButton onClick={this.nextPage}>→ Next to <b>{this.getNextPageName()}</b></NextButton> : null}
+      </div>
     );
   }
 }
@@ -80,7 +199,11 @@ export interface ContentItemProps {
   item: ContentItemModel;
 }
 export interface IYoState {
-  count: number;
+  items: ContentItemModel[];
+  index: number;
+  isLastItem: boolean;
+  isFirstItem: boolean;
+  sectionsCount: number;
 }
 
 @observer
@@ -111,7 +234,7 @@ export class ContentItem extends React.Component<ContentItemProps> {
             {content}
           </Section>
         )}
-        {item.items && <ContentItems items={item.items} count={0} />}
+        {item.items && item.items.map(item => <ContentItem item={item} key={item.id} />)}
       </>
     );
   }
@@ -125,7 +248,6 @@ export class SectionItem extends React.Component<ContentItemProps> {
     const { name, description, externalDocs, level } = this.props.item as GroupModel;
 
     const Header = level === 2 ? H2 : H1;
-
     return (
       <>
         <Row>
