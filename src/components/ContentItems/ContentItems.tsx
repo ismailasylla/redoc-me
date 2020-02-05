@@ -12,10 +12,15 @@ import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
+import Mermaid from '../Mermaid/Mermaid';
+// import '../Mermaid/styles.css';
 // import {Link, BrowserRouter} from 'react-router-dom';
 
 @observer
-export class ContentItems extends React.Component<{ items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore }, IYoState> {
+export class ContentItems extends React.Component<
+  { items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore },
+  IYoState
+> {
   constructor(props) {
     super(props);
 
@@ -31,8 +36,7 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
         for (let j = 0; j < this.props.items[i].items.length; j++) {
           tempItems.push(this.props.items[i].items[j]);
         }
-      }
-      else {
+      } else {
         tempItems.push(this.props.items[i]);
       }
     }
@@ -69,10 +73,15 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
     if (index + 1 === this.state.items.length) {
       isLastItem = true;
     }
-    this.setState({ index: index, isLastItem: isLastItem, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(index, this.state.items) })
+    this.setState({
+      index: index,
+      isLastItem: isLastItem,
+      isFirstItem: isFirstItem,
+      sectionsCount: this.getNextSectionsCount(index, this.state.items),
+    });
   }
 
-  getItemIndex = (item) => {
+  getItemIndex = item => {
     let index = 0;
     for (let i = 0; i < this.state.items.length; i++) {
       if (item.id === this.state.items[i].id) {
@@ -81,7 +90,7 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
       index++;
     }
     return index;
-  }
+  };
 
   getNextSectionsCount = (currentCount, items) => {
     let multipleSections = 0;
@@ -90,29 +99,27 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
       for (let i = currentCount; i < items.length; i++) {
         if (items[i + 1].type === 'section') {
           multipleSections++;
-        }
-        else {
+        } else {
           break;
         }
       }
     }
     return multipleSections;
-  }
+  };
 
-  getPrevSectionsCount = (currentCount) => {
+  getPrevSectionsCount = currentCount => {
     let multipleSections = 0;
     if (!this.state.isFirstItem) {
       for (let i = currentCount; i > 0; i--) {
         if (this.state.items[i - 1].type === 'section') {
           multipleSections++;
-        }
-        else {
+        } else {
           break;
         }
       }
     }
     return multipleSections;
-  }
+  };
 
   prevPage = () => {
     let currentCount = 0;
@@ -127,8 +134,13 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
     if (currentCount === 0) {
       isFirstItem = true;
     }
-    this.setState({ index: currentCount, isLastItem: false, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
-  }
+    this.setState({
+      index: currentCount,
+      isLastItem: false,
+      isFirstItem: isFirstItem,
+      sectionsCount: this.getNextSectionsCount(currentCount, this.state.items),
+    });
+  };
 
   nextPage = () => {
     let currentCount = 0;
@@ -144,24 +156,34 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
       isLastItem = true;
     }
 
-    this.setState({ index: currentCount, isLastItem: isLastItem, isFirstItem: false, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
-  }
+    this.setState({
+      index: currentCount,
+      isLastItem: isLastItem,
+      isFirstItem: false,
+      sectionsCount: this.getNextSectionsCount(currentCount, this.state.items),
+    });
+  };
 
   createSections = () => {
     let sections: JSX.Element[] = [];
     for (let i = 0; i < this.state.sectionsCount; i++) {
-      sections.push(<ContentItem item={this.state.items[this.state.index + i]} key={this.state.items[this.state.index + i].id} />);
+      sections.push(
+        <ContentItem
+          item={this.state.items[this.state.index + i]}
+          key={this.state.items[this.state.index + i].id}
+        />,
+      );
     }
     return sections;
-  }
+  };
 
   getNextPageName = () => {
     let nextCount = this.state.index + 1;
     if (this.state.sectionsCount > 0) {
       nextCount = nextCount + this.state.sectionsCount - 1;
     }
-    return this.state.items[nextCount].name;;
-  }
+    return this.state.items[nextCount].name;
+  };
 
   getPrevPageName = () => {
     let prevCount = this.state.index - 1;
@@ -170,7 +192,7 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
       prevCount = prevCount - prevSectionsCount + 1;
     }
     return this.state.items[prevCount].name;
-  }
+  };
 
   render() {
     const items = this.state.items;
@@ -180,13 +202,25 @@ export class ContentItems extends React.Component<{ items: ContentItemModel[]; i
 
     return (
       <div>
-        {!this.state.isFirstItem ? <BackButton  onClick={this.prevPage}>←  Back to <b>{this.getPrevPageName()}</b></BackButton > : null}
+        {!this.state.isFirstItem ? (
+          <BackButton onClick={this.prevPage}>
+            ← Back to <b>{this.getPrevPageName()}</b>
+          </BackButton>
+        ) : null}
 
         {this.state.isFirstItem ? <ApiInfo store={this.props.store}></ApiInfo> : null}
 
-        {this.state.sectionsCount > 0 ? this.createSections() : <ContentItem item={items[this.state.index]} key={items[this.state.index].id} />}
+        {this.state.sectionsCount > 0 ? (
+          this.createSections()
+        ) : (
+          <ContentItem item={items[this.state.index]} key={items[this.state.index].id} />
+        )}
 
-        {!this.state.isLastItem ? <NextButton onClick={this.nextPage}>→ Next to <b>{this.getNextPageName()}</b></NextButton> : null}
+        {!this.state.isLastItem ? (
+          <NextButton onClick={this.nextPage}>
+            → Next to <b>{this.getNextPageName()}</b>
+          </NextButton>
+        ) : null}
       </div>
     );
   }
@@ -263,6 +297,14 @@ export class SectionItem extends React.Component<ContentItemProps> {
             </MiddlePanel>
           </Row>
         )}
+         <Mermaid
+            chart={`graph LR;
+              A-->B;
+              B-->C;
+              B-->D[plop lanflz eknlzeknfz];
+
+              `}
+          />
       </>
     );
   }

@@ -99,11 +99,11 @@ const defaultTheme: ThemeInterface = {
     fontWeightRegular: '400',
     fontWeightBold: '600',
     fontWeightLight: '300',
-    fontFamily: 'Arial, Helvetica Neue, sans-serif',
+    fontFamily: 'Helvetica, Arial, Sans-Serif',
     smoothing: 'antialiased',
     optimizeSpeed: true,
     headings: {
-      fontFamily: 'Arial, Helvetica Neue, sans-serif',
+      fontFamily: 'Helvetica, Arial, Sans-Serif',
       fontWeight: '400',
       lineHeight: '1.6em',
     },
@@ -340,3 +340,4 @@ export type AdvancedThemeDeep<T> = T extends primitive
   : AdvancedThemeObject<T>;
 export type AdvancedThemeObject<T> = { [P in keyof T]?: AdvancedThemeDeep<T[P]> };
 export type ThemeInterface = AdvancedThemeObject<ResolvedThemeInterface>;
+
