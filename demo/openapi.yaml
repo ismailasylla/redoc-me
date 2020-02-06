@@ -32,6 +32,7 @@ info:
 
     # Authentication
 
+
     Petstore offers two forms of authentication:
       - API Key
       - OAuth2

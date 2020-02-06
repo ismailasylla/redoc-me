@@ -17,24 +17,17 @@ export class SideMenu extends React.Component<{
 	private _updateScroll?: () => void;
 
 	render() {
-		const MenuStyle = {
-			backgroundImage: 'linear-gradient(150deg,#8e44ad 0,#283a63 100%)',
-			fontWeight: 'bold'
-		} as React.CSSProperties;
-
 		const store = this.props.menu;
 		return (
-			<div style={MenuStyle}>
-				<PerfectScrollbarWrap
-					updateFn={this.saveScrollUpdate}
-					className={this.props.className}
-					options={{
-						wheelPropagation: false
-					}}
-				>
-					<MenuItems items={store.items} onActivate={this.activate} root={true} />
-				</PerfectScrollbarWrap>
-			</div>
+			<PerfectScrollbarWrap
+				updateFn={this.saveScrollUpdate}
+				className={this.props.className}
+				options={{
+					wheelPropagation: false
+				}}
+			>
+				<MenuItems items={store.items} onActivate={this.activate} root={true} />
+			</PerfectScrollbarWrap>
 		);
 	}
 

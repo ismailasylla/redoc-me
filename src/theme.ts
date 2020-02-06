@@ -124,15 +124,14 @@ const defaultTheme: ThemeInterface = {
   },
   menu: {
     width: '260px',
-    backgroundColor: 'rgba(114, 47, 170, 0.84)',
-    textColor: 'white',
-    backgroundImage:'linear-gradient(150deg, rgb(142, 68, 173) 0px, rgb(40, 58, 99) 100%)',
+    backgroundColor: 'rgb(240, 240, 240)',
+    textColor: '#0A1361',
 
     activeTextColor: theme =>
       theme.menu.textColor !== defaultTheme.menu!.textColor
         ? theme.menu.textColor
-        // : theme.colors.primary.main,
-        : 'white',
+        : theme.colors.error.main,
+
     groupItems: {
       textTransform: 'uppercase',
     },
