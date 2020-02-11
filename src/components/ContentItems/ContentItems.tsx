@@ -5,6 +5,7 @@ import { AppStore } from '../../services';
 
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';
 import { AdvancedMarkdown } from '../Markdown/AdvancedMarkdown';
+import {ExtendedDescription} from '../ExtendedDescription/ExtendedDescription';
 
 import { H1, H2, MiddlePanel, Row, Section, ShareLink } from '../../common-elements';
 import { ContentItemModel } from '../../services/MenuBuilder';
@@ -13,8 +14,7 @@ import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
 import Mermaid from '../Mermaid/Mermaid';
-// import '../Mermaid/styles.css';
-// import {Link, BrowserRouter} from 'react-router-dom';
+
 
 @observer
 export class ContentItems extends React.Component<
