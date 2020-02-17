@@ -77,8 +77,6 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               {scheme.id}
             </H2>
             <Markdown source={scheme.description || ''} />
-            <div style={{ :' middle'}}>
-
             <Mermaid
               chart={`graph LR
               A[Hard edge] -->|Link text| B(Round edge)
@@ -88,7 +86,6 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
 
               `}
             />
-            </div>
           </MiddlePanel>
           <StyledMarkdownBlock style={{ width: '450px', marginLeft: '10px' }}>
             <table className="security-details">
