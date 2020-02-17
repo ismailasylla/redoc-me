@@ -5,15 +5,14 @@ import { AppStore } from '../../services';
 
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';
 import { AdvancedMarkdown } from '../Markdown/AdvancedMarkdown';
-import {ExtendedDescription} from '../ExtendedDescription/ExtendedDescription';
 
-import { H1, H2, MiddlePanel, Row, Section, ShareLink } from '../../common-elements';
+import { H1, H2, MiddlePanel, Row, Section, ShareLink} from '../../common-elements';
 import { ContentItemModel } from '../../services/MenuBuilder';
 import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
-import Mermaid from '../Mermaid/Mermaid';
+
 
 
 @observer
@@ -294,17 +293,10 @@ export class SectionItem extends React.Component<ContentItemProps> {
           <Row>
             <MiddlePanel>
               <ExternalDocumentation externalDocs={externalDocs} />
+
             </MiddlePanel>
           </Row>
         )}
-         <Mermaid
-            chart={`graph LR;
-              A-->B;
-              B-->C;
-              B-->D[plop lanflz eknlzeknfz];
-
-              `}
-          />
       </>
     );
   }
@@ -315,6 +307,10 @@ export class OperationItem extends React.Component<{
   item: OperationModel;
 }> {
   render() {
-    return <Operation operation={this.props.item} />;
+    return (
+
+          <Operation operation={this.props.item} />
+
+    )
   }
 }

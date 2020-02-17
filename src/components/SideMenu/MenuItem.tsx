@@ -83,6 +83,7 @@ export class OperationMenuItemContent extends React.Component<OperationMenuItemC
 	render() {
 		const { item } = this.props;
 		return (
+      <>
 			<MenuItemLabel depth={item.depth} active={item.active} deprecated={item.deprecated} ref={this.ref}>
 				<OperationBadge type={item.httpVerb}>{shortenHTTPVerb(item.httpVerb)}</OperationBadge>
 				<MenuItemTitle width="calc(100% - 38px)">
@@ -90,6 +91,7 @@ export class OperationMenuItemContent extends React.Component<OperationMenuItemC
 					{this.props.children}
 				</MenuItemTitle>
 			</MenuItemLabel>
+      </>
 		);
 	}
 }

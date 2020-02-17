@@ -7,43 +7,43 @@ import { RightPanelHeader, Tab, TabList, TabPanel, Tabs } from '../../common-ele
 import { PayloadSamples } from '../PayloadSamples/PayloadSamples';
 
 export interface ResponseSamplesProps {
-  operation: OperationModel;
+	operation: OperationModel;
 }
 
 @observer
 export class ResponseSamples extends React.Component<ResponseSamplesProps> {
-  operation: OperationModel;
+	operation: OperationModel;
 
-  render() {
-    const { operation } = this.props;
-    const responses = operation.responses.filter(response => {
-      return response.content && response.content.hasSample;
-    });
+	render() {
+		const { operation } = this.props;
+		const responses = operation.responses.filter((response) => {
+			return response.content && response.content.hasSample;
+		});
 
-    return (
-      (responses.length > 0 && (
-        <div>
-          <RightPanelHeader> Response samples </RightPanelHeader>
+		return (
+			(responses.length > 0 && (
+				<div>
+					<RightPanelHeader> Response samples </RightPanelHeader>
 
-          <Tabs defaultIndex={0}>
-            <TabList>
-              {responses.map(response => (
-                <Tab className={'tab-' + response.type} key={response.code}>
-                  {response.code}
-                </Tab>
-              ))}
-            </TabList>
-            {responses.map(response => (
-              <TabPanel key={response.code}>
-                <div>
-                  <PayloadSamples content={response.content!} />
-                </div>
-              </TabPanel>
-            ))}
-          </Tabs>
-        </div>
-      )) ||
-      null
-    );
-  }
+					<Tabs defaultIndex={0}>
+						<TabList>
+							{responses.map((response) => (
+								<Tab className={'tab-' + response.type} key={response.code}>
+									{response.code}
+								</Tab>
+							))}
+						</TabList>
+						{responses.map((response) => (
+							<TabPanel key={response.code}>
+								<div>
+									<PayloadSamples content={response.content!} />
+								</div>
+							</TabPanel>
+						))}
+					</Tabs>
+				</div>
+			)) ||
+			null
+		);
+	}
 }

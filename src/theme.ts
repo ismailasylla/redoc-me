@@ -149,7 +149,7 @@ const defaultTheme: ThemeInterface = {
     gutter: '2px',
   },
   rightPanel: {
-    backgroundColor: '#263238',
+    backgroundColor: '#1B1F37',
     width: '40%',
     textColor: '#ffffff',
   },
