@@ -85,8 +85,6 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               B --> C{Decision}
               C -->|One| D[Result one]
               C -->|Two| E[Result two]
-              C -->|Two| E[Result two]
-              C -->|Two| E[Result two]
 
               `}
             />
