@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { ApiInfo } from '../ApiInfo/';
+import { ApiInfo } from '../ApiInfo/ApiInfo';
 import { AppStore } from '../../services';
 
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';

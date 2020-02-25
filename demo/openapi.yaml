@@ -1,961 +1,1540 @@
-openapi: 3.0.0
-servers:
-  - url: //petstore.swagger.io/v2
-    description: Default server
-  - url: //petstore.swagger.io/sandbox
-    description: Sandbox server
+openapi: 3.0.2
+
+
+### Changes 2019/10/08
+## - Correlation-ID header
+##   - Added Correlation-ID header component
+##   - Added Correlation-ID parameter header component
+##   - Added Correlation-ID to all requests,responses
+## - Application-Key Request Header
+##   - Removed Application-Key header from all calls
+##   - Commented out Application-Key component
+## - Updated Servers to reflect api.elavon.com.
+##   BaseURL has not yet been identified.
+
+## Security
+## - Added /token endpoint
+## - Added component:schemas: for OAuthToken and OAuthError
+##   per example from USB/EASE
+## - Added components:securitySchemes:oAuth2ClientCredentials:
+##
+## - Added Authorization header to all endpoints.
+
+
+###### Review Questions
+## /token
+##  - Do we need an authorization header here?  is this for
+##    refreshing the token?  Doesn't seem plausible that
+##    the header would have to be required if the client doesn't
+##    have the token yet.
+
+### Governance Review Notes:
+## Update page list numerics to be numbers, not strings
+## FUTURE: Update IDs to have capital "ID"
+## Examples for all fields.
+## Descriptions for all fields
+## Spell out attribute names
+## Error codes that we need to spell out:
+  # 400 yes
+  # 401 yes
+  # 403 forbidden yes
+  # 404 Yes not found?
+  # 409 Conflict - yes if applicable
+  ## Review error responses in the backend and ensure complete coverage
+
+### Work with Akhil and Chethan to nail down Correlation-ID Handling in
+##  spec, proxy, backend, etc.
+
+## For /invoice/{invoice-id}/cancel - include 409 error response in case
+##  the invoice is already cancel
+
+### update field for /invoices/:id/send-email should be a boolean
+
+
+
+
+
 info:
-  description: |
-    This is a sample server Petstore server.
-    You can find out more about Swagger at
-    [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).
-    For this sample, you can use the api key `special-key` to test the authorization filters.
-
-    # Introduction
-    This API is documented in **OpenAPI format** and is based on
-    [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.
-    It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
-    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
-    OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).
-
-    # OpenAPI Specification
-    This API is documented in **OpenAPI format** and is based on
-    [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.
-    It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
-    tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
-    OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).
-
-    # Cross-Origin Resource Sharing
-    This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with  [W3C spec](https://www.w3.org/TR/cors/).
-    And that allows cross-domain communication from the browser.
-    All responses have a wildcard same-origin which makes them completely public and accessible to everyone, including any code on any site.
-
-    # Authentication
-
-    Petstore offers two forms of authentication:
-      - API Key
-      - OAuth2
-    OAuth2 - an open protocol to allow secure authorization in a simple
-    and standard method from web, mobile and desktop applications.
-
-    <SecurityDefinitions />
-
-  version: 1.0.0
-  title: Swagger Petstore
-  termsOfService: "http://swagger.io/terms/"
+  version: 2.0.0
+  title: Converge Billing & Invoicing with Hospitality
   contact:
-    name: API Support
-    email: apiteam@swagger.io
-    url: https://github.com/Redocly/redoc
-  x-logo:
-    url: "https://redocly.github.io/redoc/petstore-logo.png"
-    altText: Petstore logo
-  license:
-    name: Apache 2.0
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-externalDocs:
-  description: Find out how to create Github repo for your OpenAPI spec.
-  url: "https://github.com/Rebilly/generator-openapi-repo"
+    name: Elavon Relationship Manager
+  description: |
+
+    # Overview
+
+    This API follows common standards and practices and most HTTP clients will likely support it. Standard HTTP authentication methods and response status codes are used. We recommend using either a rest client like Postman or cURL, you can retrieve existing resources and begin to explore the API with just a browser.
+
+    ## Requirements
+
+    Integrations with Billing and Invoicing have the following requirements.
+
+    - Billing and Invoicing for Hospitality must be enabled at Terminal setup
+    - Tokenization must be enabled at Terminal setup
+    - All communication must be over secure HTTP using at least TLS 1.2
+
+    Refer to the [Integration Guide](@@converge/documents/?converge-billing-and-invoicing-integration-guide/book/02_getting_started.html) for more information on terminal setup.
+
+    ## This Is Not the General Converge API Reference
+
+    This API Reference is specifically for Converge Billing and Invoicing.
+
+    Refer to the [Converge API Reference](@@converge/documents/?converge-integration-guide/book/api_reference/intro.html).
+
+    ## Supported Payment Types
+
+    When a customer receives an email Invoice, they have the option to click a link to a Converge Hosted Payments form where they can enter payment information for the invoice.
+
+    Billing and Invoicing can support the following payment types.
+
+    - Credit Cards
+    - Digital Wallets
+    - ACH/E-Checks
+    - Gift Cards
+
+    ### Credit Cards
+
+    Credit Cards are a payment type enabled by default. A merchant can change the accepted card brands at terminal setup. Billing and Invoicing will use all applicable terminal settings for Credit Cards.
+
+    If you would like to disable Credit Cards as a payment method in the Billing and Invoicing Hosted Payments form, you can change this setting in the Converge UI Settings tab.
+
+    ### Digital Wallets (Coming Soon)
+
+    Digital wallets are third party services that let a customer securely store their credit card information and pass it to merchants for transactions.
+
+    Converge Billing and Invoicing supports the following widely used digital wallets.
+
+    - PayPal&trade;
+    - Visa Checkout&trade;
+    - Mastercard MasterPass&trade;
+    - Apple Pay&trade; on the Web
+
+    Digital wallets are enabled by default. However, each wallet requires additional steps in the Converge UI to finish setting up. The following articles provide more information on setting up each digital wallet for Converge.
+
+    - <a href="https://support.convergepay.com/s/article/Set-Up-PayPal" target="_blank">Set Up PayPal</a>
+    - <a href="https://support.convergepay.com/s/article/Set-up-MasterPass" target="_blank">Set Up MasterPass</a>
+    - <a href="https://support.convergepay.com/s/article/Set-Up-Visa-Checkout" target="_blank">Set Up Visa Checkout</a>
+    - <a href="https://support.convergepay.com/s/article/Set-Up-Apple-Pay-for-Your-Converge-Payment-Page" target="_blank">Set Up Apple Pay</a>
+
+    ### E-Checks
+
+    E-Checks are a payment type that a merchant can enable at terminal setup. You can change whether E-Checks are accepted or not at terminal setup or by calling their Relationship Manager.
+
+    If you would like to disable E-Checks as a payment method in the Billing and Invoicing Hosted Payments form, you can change this setting in the Converge UI Settings tab.
+
+    ### Gift Cards
+
+    Gift Cards are a payment type that a merchant can enable at terminal setup.
+
+    If you would like to disable Gift Cards as a payment method in the Billing and Invoicing Hosted Payments form, you can change this setting in the Converge UI Settings tab.
+
+    ## Payment Options
+
+    You can enable the following payment options in on their terminal either as part of terminal setup, by calling your Relationship Manager, or under the Settings tab in the Converge UI.
+
+    ### Partial Payments
+
+    Partial payments allows a customer to pay less than the full total of their invoice and receive a new total for the remaining balance. This lets customers split the total balance of an invoice between multiple payment types or multiple paying parties.
+
+    A Merchant can enable partial payments in the Converge UI under the Settings tab.
+
+    ### Dynamic Currency Conversion - DCC
+
+    Billing and Invoicing can process Dynamic Currency Conversion (DCC) for merchants. With DCC, the merchant sets their prices in whatever currency they prefer - usually whatever their local currency is. When the customer enters a card for payment, if the card is valid for DCC, the customer will receive the option to pay with their own local currency.
+
+    You can enable DCC as part of terminal setup. If your terminal is already set up and you would like to enable DCC, please contact your Relationship Manager.
+
+    ### Multi Currency Conversion - MCC
+
+    Similar to Dynamic Currency Conversion, Multi Currency Conversion (MCC) enables a Hosted Payment Form to support multiple currency types as part of its display. When a customer arrives at the Hosted Payment Form, they will see their receipt totals in each of the currencies supported by the Merchant's MCC setup.
+
+    You can enable MCC as part of terminal setup. If your terminal is already set up and you would like to enable MCC, please contact your Relationship Manager.
+
+
 tags:
-  - name: pet
-    description: Everything about your Pets
-  - name: store
-    description: Access to Petstore orders
-  - name: user
-    description: Operations about user
-  - name: pet_model
-    x-displayName: The Pet Model
+  - name: Authentication
     description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Pet" />
-  - name: store_model
-    x-displayName: The Order Model
+
+      The Billing and Invoicing API uses the OAuth 2.0 protocol. This means authentication will be a two step process.
+      1. Get a token via the /token endpoint. Send your client credentials in the header. Elavon will return an access token.
+      2. Send the access token in the header for all other operations.
+
+      Your consumer key and secret key will be provided by Elavon when you start your project. These credentials will be different for testing and for production.
+
+      Never share your secret key. Keep it guarded and secure.
+
+  - name: Merchant
+    description: >-
+      Provides access to the merchant object. The merchant object contains the settings for a merchant account.
+
+  - name: Invoices
     description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Order" exampleRef="#/components/examples/Order" showReadOnly={true} showWriteOnly={true} />
-x-tagGroups:
-  - name: General
-    tags:
-      - pet
-      - store
-  - name: User Management
-    tags:
-      - user
-  - name: Models
-    tags:
-      - pet_model
-      - store_model
+      Invoices contains the Quote and Invoice functionality of Billing and Invoicing API.
+
+      ## The Invoice Object
+
+      Users of the Converge UI will recognize the term invoice, but the usage in this document is different from in the Converge UI. An Invoice in the Billing and Invoicing API refers to the Invoice Object can be either a Quote or an Invoice as they appear in the Converge UI depending on which you apply to it.
+
+      ## Parts of an Invoice
+
+      Each Invoice object is made of the following components
+
+      - Header
+      - Details
+      - Notes
+      - Summary
+
+      ### Header
+
+      The part of the invoice containing customer information and scheduling. This is the part of the invoice that determines who will receive the invoice, when and where they will receive it, and how they can pay for it.
+
+      ### Details
+
+      This section determines what is being bought and what each unit of it costs. The part of the invoice that contains a tally of the items to be sold and their costs.
+
+      ### Notes
+
+      This section of the Invoice is a list of notes set by a Merchant. These notes are open to user definition and can serve different purposes depending on what the Merchant wants to use it for.
+
+      ### Summary
+
+      This is the portion of the Invoice that sets what everything will cost in total. The Summary calculates the cost of each line item, applies tax, and calculates a total.
+
+  - name: Errors
+    description: |
+
+      Converge Billing and Invoicing follows HTTP conventions for its status codes. For convenience, we've provided the most common status codes used by Billing and Invoicing.
+
+      ## 2xx Status Codes
+
+      | Status Code | Success Description |
+      |-------------|---------------------|
+      | 200 | Sucessful - Billing and Invoicing received your request and responded. |
+      | 201 | Created - Billing and Invoicing created a new resource based on your request. |
+      | 202 | Accepted - Billing and Invoicing entered the information you sent in your request. |
+      | 204 | Deleted - Billing and Invoicing deleted the information specified in your request or else there wasn't anything there to begin with.
+
+      ## 4xx Status Codes
+
+      | Status Code | Failure Description |
+      |-------------|---------------------|
+      | 400         | Bad Request - expected Authorization header is missing or empty |
+      | 403        | Failed to authenticate. |
+      | 404         | Resource Not Found - The requested resource does not exist. |
+      | 412        | A Precondition Failed - You attempted to create a preexisting resource.  |
+
+
+      ## 5xx Error Codes
+
+      5xx status codes indicate a server problem. These are unexpected. Billing and Invoicing may be unable to return a standard error response for these.
+
+      | Status Code | Failure Description |
+      |-------------|---------------------|
+      | 500         | Internal Server Error. |
+      | 503        |  Service Unavailable. |
+
+      ## Non-HTTP Failures
+
+      It's possible for the transaction to encounter errors during processing with Billing and Invoicing. These errors will return successful status codes but will contain error codes in their bodies.
+      More information on each of these errors is provided in the following table.
+
+      | Error Code | Description                 |
+      | ---------- | --------------------------- |
+      | BIE0000    | Internal Error.             |
+      | BIE0001    | Not Authorized.             |
+      | BIE0002    | Already Exists.             |
+      | BIE0003    | Internal Error.             |
+      | BIE0004    | Not Found.                  |
+      | BIE0005    | Validation Error.           |
+      | BIE0006    | Missing Data.               |
+      | BIE0007    | Cannot transfer on Invoice. |
+      | BIE0008    | Unsupported File extension  |
+      | BIE0009    | Cannot Update Status.       |
+      | BIE0010    | Incorrect Statue state.     |
+      | BIE0011    | Unsupported Media Type.     |
+      | BIE0012    | Max count exceeded.         |
+
+servers:
+  - url: https://cert-api.elavon.com/ecomm/billing/v2
+    description: Test
+  - url: https://api.elavon.com/ecomm/billing/v2
+    description: Production
+
+
+
 paths:
-  /pet:
-    parameters:
-      - name: Accept-Language
-        in: header
-        description: "The language you prefer for messages. Supported values are en-AU, en-CA, en-GB, en-US"
-        example: en-US
-        required: false
-        schema:
-          type: string
-          default: en-AU
-      - name: cookieParam
-        in: cookie
-        description: Some cookie
-        required: true
-        schema:
-          type: integer
-          format: int64
+
+################
+## Authentication Endpoint
+  # "/auth/oauth2/v1/token":
+  "/token":
+
     post:
       tags:
-        - pet
-      summary: Add a new pet to the store
-      description: Add new pet to the store inventory.
-      operationId: addPet
-      responses:
-        "405":
-          description: Invalid input
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-      x-code-samples:
-        - lang: "C#"
-          source: |
-            PetStore.v1.Pet pet = new PetStore.v1.Pet();
-            pet.setApiKey("your api key");
-            pet.petType = PetStore.v1.Pet.TYPE_DOG;
-            pet.name = "Rex";
-            // set other fields
-            PetStoreResponse response = pet.create();
-            if (response.statusCode == HttpStatusCode.Created)
-            {
-              // Successfully created
-            }
-            else
-            {
-              // Something wrong -- check response for errors
-              Console.WriteLine(response.getRawResponse());
-            }
-        - lang: PHP
-          source: |
-            $form = new \PetStore\Entities\Pet();
-            $form->setPetType("Dog");
-            $form->setName("Rex");
-            // set other fields
-            try {
-                $pet = $client->pets()->create($form);
-            } catch (UnprocessableEntityException $e) {
-                var_dump($e->getErrors());
-            }
-      requestBody:
-        $ref: "#/components/requestBodies/Pet"
-    put:
-      tags:
-        - pet
-      summary: Update an existing pet
-      description: ""
-      operationId: updatePet
-      responses:
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: Pet not found
-        "405":
-          description: Validation exception
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-      x-code-samples:
-        - lang: PHP
-          source: |
-            $form = new \PetStore\Entities\Pet();
-            $form->setPetId(1);
-            $form->setPetType("Dog");
-            $form->setName("Rex");
-            // set other fields
-            try {
-                $pet = $client->pets()->update($form);
-            } catch (UnprocessableEntityException $e) {
-                var_dump($e->getErrors());
-            }
-      requestBody:
-        $ref: "#/components/requestBodies/Pet"
-  "/pet/{petId}":
-    get:
-      tags:
-        - pet
-      summary: Find pet by ID
-      description: Returns a single pet
-      operationId: getPetById
+        - Auth Token
+      summary: OAuth 2.0 Token Endpoint
+      description: OAuth 2.0 Token Endpoint
+      # servers:
+      #   - url: https://cert-api.elavon.com/auth/oauth2/v1/token
+      #     description: Test
+      #   - url: https://api.elavon.com/auth/oauth2/v1/token
+      #     description: Production
+      servers:
+        - url: https://cert-api.elavon.com/auth/oauth2/v1/
+          description: Test
+        - url: https://api.elavon.com/auth/oauth2/v1/
+          description: Production
+      operationId: oauthToken
       parameters:
-        - name: petId
-          in: path
-          description: ID of pet to return
-          required: true
-          deprecated: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Pet"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Pet"
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: Pet not found
-      security:
-        - api_key: []
-    post:
-      tags:
-        - pet
-      summary: Updates a pet in the store with form data
-      description: ""
-      operationId: updatePetWithForm
-      parameters:
-        - name: petId
-          in: path
-          description: ID of pet that needs to be updated
+        - name: authorization
+          in: header
+          description: The Base64 encoded authorization Basic header of Developer application
+          example: "Authorization: Basic YUtMWjZBcjJnVGwyYXBZRVl1a3Q5TWdHcFRTcEdIbnI6VHA1NmVybjd6UFRhMEVzSA=="
           required: true
           schema:
-            type: integer
-            format: int64
-      responses:
-        "405":
-          description: Invalid input
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+            type: string
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              properties:
-                name:
-                  description: Updated name of the pet
-                  type: string
-                status:
-                  description: Updated status of the pet
-                  type: string
-    delete:
-      tags:
-        - pet
-      summary: Deletes a pet
-      description: ""
-      operationId: deletePet
-      parameters:
-        - name: api_key
-          in: header
-          required: false
-          schema:
-            type: string
-          example: "Bearer <TOKEN>"
-        - name: petId
-          in: path
-          description: Pet id to delete
-          required: true
-          schema:
-            type: integer
-            format: int64
+              $ref: "#/components/schemas/TokenRequest"
       responses:
-        "400":
-          description: Invalid pet value
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-  "/pet/{petId}/uploadImage":
-    post:
-      tags:
-        - pet
-      summary: uploads an image
-      description: ""
-      operationId: uploadFile
-      parameters:
-        - name: petId
-          in: path
-          description: ID of pet to update
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: successful operation
+        200:
+          description: OK
+          headers: {}
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiResponse"
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-      requestBody:
-        content:
-          application/octet-stream:
-            schema:
-              type: string
-              format: binary
-  /pet/findByStatus:
-    get:
-      tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
-      parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: true
-          style: form
-          schema:
-            type: array
-            minItems: 1
-            maxItems: 3
-            items:
-              type: string
-              enum:
-                - available
-                - pending
-                - sold
-              default: available
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pet"
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pet"
-        "400":
-          description: Invalid status value
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-        - pet
-      summary: Finds Pets by tags
-      description: >-
-        Multiple tags can be provided with comma separated strings. Use tag1,
-        tag2, tag3 for testing.
-      operationId: findPetsByTags
-      deprecated: true
-      parameters:
-        - name: tags
-          in: query
-          description: Tags to filter by
-          required: true
-          style: form
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pet"
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pet"
-        "400":
-          description: Invalid tag value
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
-  /store/inventory:
-    get:
-      tags:
-        - store
-      summary: Returns pet inventories by status
-      description: Returns a map of status codes to quantities
-      operationId: getInventory
-      responses:
-        "200":
-          description: successful operation
+                $ref: '#/components/schemas/OAuthToken'
+        400:
+          description: Bad Request - expected Authorization header is missing or empty
           content:
             application/json:
               schema:
                 type: object
-                additionalProperties:
-                  type: integer
-                  format: int32
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: Bad Request
+        401:
+          description: Authorization Failure
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    errorResponse:
+                      type: object
+                      properties:
+                        errorResponseCode:
+                          type: integer
+                          example: 401
+                        errorDescription:
+                          type: string
+                          example: Invalid Credentials
+
+
+
+
+################
+## Invoices
+
+  "/invoices":
+    summary: All Invoices
+    description: This endpoint contains all of the invoices for a Merchant's account.
+    parameters:
+      - $ref: "#/components/parameters/Authorization"
+#      - $ref: "#/components/parameters/Correlation-ID"
+    get:
+      tags:
+        - Invoices
+      summary: Get List of Invoices
+      description: Returns a list of invoices based on query parameters.
+      operationId: GetInvoices
       security:
-        - api_key: []
-  /store/order:
-    post:
-      tags:
-        - store
-      summary: Place an order for a pet
-      description: ""
-      operationId: placeOrder
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Order"
-        "400":
-          description: Invalid Order
-          content:
-            application/json:
-              example:
-                status: 400
-                message: "Invalid Order"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Order"
-        description: order placed for purchasing the pet
-        required: true
-  "/store/order/{orderId}":
-    get:
-      tags:
-        - store
-      summary: Find purchase order by ID
-      description: >-
-        For valid response try integer IDs with value <= 5 or > 10. Other values
-        will generated exceptions
-      operationId: getOrderById
+        - oAuth2ClientCredentials: []
+
       parameters:
-        - name: orderId
-          in: path
-          description: ID of pet that needs to be fetched
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-            maximum: 5
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Order"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Order"
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: Order not found
-    delete:
-      tags:
-        - store
-      summary: Delete purchase order by ID
-      description: >-
-        For valid response try integer IDs with value < 1000. Anything above
-        1000 or nonintegers will generate API errors
-      operationId: deleteOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: ID of the order that needs to be deleted
-          required: true
-          schema:
-            type: string
-            minimum: 1
-      responses:
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: Order not found
-  /user:
-    post:
-      tags:
-        - user
-      summary: Create user
-      description: This can only be done by the logged in user.
-      operationId: createUser
-      responses:
-        default:
-          description: successful operation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-        description: Created user object
-        required: true
-  "/user/{username}":
-    get:
-      tags:
-        - user
-      summary: Get user by user name
-      description: ""
-      operationId: getUserByName
-      parameters:
-        - name: username
-          in: path
-          description: "The name that needs to be fetched. Use user1 for testing. "
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/User"
-        "400":
-          description: Invalid username supplied
-        "404":
-          description: User not found
-    put:
-      tags:
-        - user
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
-      parameters:
-        - name: username
-          in: path
-          description: name that need to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        "400":
-          description: Invalid user supplied
-        "404":
-          description: User not found
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-        description: Updated user object
-        required: true
-    delete:
-      tags:
-        - user
-      summary: Delete user
-      description: This can only be done by the logged in user.
-      operationId: deleteUser
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        "400":
-          description: Invalid username supplied
-        "404":
-          description: User not found
-  /user/createWithArray:
-    post:
-      tags:
-        - user
-      summary: Creates list of users with given input array
-      description: ""
-      operationId: createUsersWithArrayInput
-      responses:
-        default:
-          description: successful operation
-      requestBody:
-        $ref: "#/components/requestBodies/UserArray"
-  /user/createWithList:
-    post:
-      tags:
-        - user
-      summary: Creates list of users with given input array
-      description: ""
-      operationId: createUsersWithListInput
-      responses:
-        default:
-          description: successful operation
-      requestBody:
-        $ref: "#/components/requestBodies/UserArray"
-  /user/login:
-    get:
-      tags:
-        - user
-      summary: Logs user into the system
-      description: ""
-      operationId: loginUser
-      parameters:
-        - name: username
+#        - $ref: "#/components/parameters/Correlation-ID"
+        - $ref: "#/components/parameters/merchantId"
+        - name: type
           in: query
-          description: The user name for login
-          required: true
+          description: Invoice Type
+          required: false
           schema:
             type: string
-        - name: password
+        - name: status
           in: query
-          description: The password for login in clear text
-          required: true
+          description: Status of an invoice.
+          required: false
           schema:
             type: string
+        - $ref: "#/components/parameters/Pagination-Page"
+        - $ref: "#/components/parameters/Pagination-PageSize"
+        - $ref: "#/components/parameters/Pagination-Sort-Field"
+        - $ref: "#/components/parameters/Pagination-Sort-Order"
+        - name: dateRange
+          in: query
+          description: Any values other than available values will default to today
+          required: false
+          schema:
+            type: string
+            enum:
+              - today
+              - tomorrow
+              - next7
+              - next30
+        - name: searchTerm
+          in: query
+          description: Searches for first name, last name, company, invoice number, invoice amount, CC email, shipping last name, event name
+          required: false
+          schema:
+            type: string
+        - name: archivedFlag
+          in: query
+          required: false
+          schema:
+            type: boolean
+            description: A flag marking an invoice as archived.
+            example: true
+        - name: details
+          in: query
+          description: include invoice details
+          required: false
+          schema:
+            type: boolean
+        - name: notes
+          in: query
+          description: include invoice notes
+          required: false
+          schema:
+            type: boolean
+
       responses:
-        "200":
-          description: successful operation
+        '200':
+          description: Successful
           headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              description: date in UTC when token expires
-              schema:
-                type: string
-                format: date-time
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
-                type: string
-              examples:
-                response:
-                  value: OK
-            application/xml:
+                $ref: "#/components/schemas/InvoicePagination"
+    post:
+      tags:
+        - Invoices
+      summary: Create Invoice
+      description: Creates an invoice based on the parameters of the request.
+      operationId: CreateInvoice
+      security:
+        - oAuth2ClientCredentials: []
+      parameters:
+        - $ref: "#/components/parameters/merchantId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Invoice"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+            Location:
+              $ref: '#/components/headers/Location'
+          content:
+            application/json:
               schema:
-                type: string
-              examples:
-                response:
-                  value: <Message> OK </Message>
-            text/plain:
-              examples:
-                response:
-                  value: OK
-        "400":
-          description: Invalid username/password supplied
-  /user/logout:
+                $ref: "#/components/schemas/Invoice"
+
+  "/invoices/{invoice-id}":
+    summary: An Invoice
+    description: An individual invoice associated with a merchant's account.
+    parameters:
+      - $ref: "#/components/parameters/invoice-id"
+      - $ref: "#/components/parameters/Authorization"
+#      - $ref: "#/components/parameters/Correlation-ID"
+
     get:
       tags:
-        - user
-      summary: Logs out current logged in user session
-      description: ""
-      operationId: logoutUser
+        - Invoices
+      summary: Get Invoice
+      description: >-
+        Get the following pieces of an invoice
+         - header
+         - details
+         - notes
+         - summary
+      operationId: GetInvoiceHeaderDetail
+      security:
+        - oAuth2ClientCredentials: []
+      parameters:
+        - $ref: "#/components/parameters/merchantId"
       responses:
-        default:
-          description: successful operation
+        '200':
+          description: Successful
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+
+  "/invoices/{invoice-id}/cancel":
+    summary: Cancel Individual Invoice
+    description: Posting to this endpoint will set the associated invoice's status to canceled.
+    parameters:
+      - $ref: "#/components/parameters/invoice-id"
+      - $ref: "#/components/parameters/Authorization"
+#      - $ref: "#/components/parameters/Correlation-ID"
+    post:
+      tags:
+        - Invoices
+      summary: Cancel An Invoice
+      description: |-
+        Set an invoice's status to canceled. If your merchant account has emailing enabled, an email alerting the invoice recipient will send automatically.
+
+        This endpoint changes the state of the invoice.  It does not delete the invoice.
+
+      operationId: CancelInvoice
+      security:
+        - oAuth2ClientCredentials: []
+      parameters:
+        - $ref: "#/components/parameters/merchantId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_id:
+                  type: string
+                  description: The User ID of the user that requested the invoice cancelation.
+                  example: ipfreely
+      responses:
+        '200':
+          description: Successful
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+
+  "/invoices/{invoice-id}/send-email":
+    summary: Send Invoice by Email
+    description: This endpoint manages sending templated emails for an invoice.
+    parameters:
+      - $ref: "#/components/parameters/Authorization"
+#      - $ref: "#/components/parameters/Correlation-ID"
+      - $ref: "#/components/parameters/invoice-id"
+
+    post:
+      tags:
+        - Invoices
+      summary: Send Email
+      description: Generate an email for the selected invoice based on the merchant account's email templates and send them to the user. More information on setting the email template is available in [Getting Started](@@converge/documents/?converge-billing-and-invoicing-integration-guide/book/02_getting_started.html)
+      operationId: SendEmail
+      security:
+        - oAuth2ClientCredentials: []
+      parameters:
+#        - $ref: "#/components/parameters/Correlation-ID"
+        - $ref: "#/components/parameters/merchantId"
+        - name: update
+          in: query
+          description: Indicates that email should be generated from an updated template
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '202':
+          description: Accepted.
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+
+
+###########
+## Merchants
+
+  "/merchants/{merchant-id}":
+    summary: A Merchant
+    description: The pieces of information associated with a merchant account. Merchant information factors into other Billing and Invoicing API queries.
+    parameters:
+      - $ref: "#/components/parameters/Authorization"
+#      - $ref: "#/components/parameters/Correlation-ID"
+      - $ref: "#/components/parameters/merchant-id"
+
+    get:
+      tags:
+        - Merchant
+      summary: Get Merchant
+      description: Get Billing and Invoicing relevant information associated with a merchant profile.
+      operationId: GetMerchant
+      security:
+        - oAuth2ClientCredentials: []
+#      parameters:
+#        - $ref: "#/components/parameters/Correlation-ID"
+      responses:
+        '200':
+          description: Successful
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Merchant"
+        '400':
+          description: Bad Request - expected Authorization header is missing or empty
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Errors"
+                  - example:
+                      errorCode: "400"
+        '403':
+          description: Not Authorized
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Errors"
+                  - example:
+                      errorCode: "403"
+        '404':
+          description: Not Found
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Errors"
+                  - example:
+                      errorCode: "404"
+        '500':
+          description: Internal Server Error.
+          headers:
+            Correlation-ID:
+              $ref: '#/components/headers/Correlation-ID'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Errors"
+                  - example:
+                      errorCode: "500"
+
+
 components:
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      description: Auth via Client Credentials Grant
+      flows:
+        clientCredentials:
+          tokenUrl: /token
+          scopes: {}
+
+  headers:
+    Location:
+      description: Provides the location of a resource.
+      required: false
+      schema:
+        type: string
+        format: url
+    Correlation-ID:
+      description: A string to identify and correlate the request and response. Optionally generated by the client; if not present, the service will generate it for the transaction.
+      required: true
+      example:
+      schema:
+        type: string
+        format: Unique string
+
+  parameters:
+    # Application-Key:
+    #   name: Application-Key
+    #   in: header
+    #   required: true
+    #   schema:
+    #     type: string
+
+    Authorization:
+      name: Authorization
+      description: An opaque token representing the logged in session.
+      required: true
+      in: header
+      schema:
+        type: string
+
+    invoice-id:
+      name: invoice-id
+      description: A unique identifier for an invoice.
+      in: path
+      required: true
+      schema:
+        type: string
+
+    merchantId:
+      name: merchant-id
+      description: A merchant's identification number.
+      example: 9D834817-D95B-4ABA-BCA9-16ED55A6C3F2
+      in: query
+      required: true
+      schema:
+        type: string
+
+    merchant-id:
+      name: merchant-id
+      description: A merchant's identification number.
+      example: 9D834817-D95B-4ABA-BCA9-16ED55A6C3F2
+      in: path
+      required: true
+      schema:
+        type: string
+
+    language-query:
+      name: language
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - EN
+          - FR
+    language:
+      name: language
+      in: path
+      description: The language the Invoice will display in.
+      required: true
+      example: "EN"
+      schema:
+        type: string
+        enum:
+          - EN
+          - FR
+
+
+    Pagination-Page:
+      name: page
+      in: query
+      description: page
+      required: false
+      schema:
+        type: integer
+        format: int32
+    Pagination-PageSize:
+      name: pageSize
+      in: query
+      description: The total number of invoices to display on a page.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    Pagination-Sort-Field:
+      name: sortField
+      in: query
+      description: The field that the Invoices will be sorted by.
+      required: false
+      schema:
+        type: string
+    Pagination-Sort-Order:
+      name: sortOrder
+      in: query
+      description: The order to sort the Invoices by.
+      required: false
+      schema:
+        type: string
+
+
+  requestBodies:
+    InvoiceHeader:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InvoiceHeader"
+
   schemas:
-    ApiResponse:
+    # Accept-Version:  #For clients
+    #   name: Accept-Version
+    #   in: header
+    #   description: API version requested by client.
+    #   required: false
+    #   schema:
+    #     type: string
+
+    # Version:
+    #   name: version
+    #   in: path
+    #   required: true
+    #   schema:
+    #     type: string
+
+
+    Errors:
+      type: array
+      title: Errors
+      description: An array of errors and related information encountered during an interaction.
+      items:
+        type: object
+        properties:
+          errorCode:
+            type: string
+            description: The code for an encountered error. See the [Errors](#tag/Errors) for more information.
+          message:
+            type: string
+            description: More information about the error.
+          details:
+            type: array
+            description: An array of items that prompted errors and the reasons for those errors.
+            items:
+              type: object
+              properties:
+                item:
+                  type: string
+                  description: The item that caused an error.
+                reason:
+                  type: string
+                  description: The reason an error happened.
+    PagedList:
+      description: 'Base for the PagedListXXX schemas'
+      properties:
+        first:
+          type: string
+          format: url
+          description: A link to the first page Returns null if on first page.
+          readOnly: true
+        previous:
+          type: string
+          format: url
+          description: A link to the previous page. Returns null if on first page.
+          readOnly: true
+        next:
+          type: string
+          format: url
+          description: A link to the next page. Returns null if on last page.
+          readOnly: true
+        last:
+          type: string
+          format: url
+          description: A link to the last page. Returns null if on last page.
+          readOnly: true
+        currentPage:
+          type: integer
+          format: int32
+          description: Current page in a paged list.
+          example: 8
+          readOnly: true
+        totalItems:
+          type: integer
+          format: int32
+          description: 'Current page in paged list.'
+          readOnly: true
+
+
+    TokenRequest:
       type: object
+      properties:
+        grant_type:
+          type: string
+          description: 'Grant Type'
+          example: grant_type=client_credentials
+
+    Invoice:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/InvoiceHeader"
+        details:
+          type: array
+          description: An array of objects containing the information describing the items included in an invoice.
+          items:
+            $ref: "#/components/schemas/InvoiceDetail"
+        notes:
+          type: array
+          description: An array of objects containing the details of all notes included in an invoice.
+          items:
+            $ref: "#/components/schemas/InvoiceNote"
+        summary:
+          $ref: "#/components/schemas/InvoiceSummary"
+    InvoicePagination:
+      title: 'PagedListOfInvoice'
+      description:  'Paged list of Invoices'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PagedList'
+        - type: object
+          properties:
+            items:
+              type: array
+              description: An array of all items in an invoice.
+              items:
+                $ref: "#/components/schemas/Invoice"
+    InvoiceHeader:
+      type: object
+      description: An object containng information about the scheduling of the invoice, management of the invoice by Converge users, and information on the customer the invoice is for.
+      required:
+        - customerEmail
+        - firstName
+        - invoiceDate
+        - invoiceNumber
+        - invoiceType
+        - language
+        - lastName
+      properties:
+        id:
+          type: string
+          description: The unique identifier for an invoice.
+          format: uuid
+          readOnly: true
+        invoiceType:
+          description: >-
+            'This field determines which type of invoice to send to a customer:
+              - **TQUOTE**: Issues a quote to the recipient. A quote can be agreed to or rejected by the recipient. If the receipient agrees to the quote, an invoice will be generated based off of the quote. This type of invoice is best for business cases where a customer needs to agree to pricing for a service ahead of time.
+              - **TPASS**: Issued an invoice to the recipient. The recipient may enter a Converge Hosted Payment Form through a link in the invoice.'
+          type: string
+          enum:
+            - TQUOTE
+            - TPASS
+        merchantId:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The unique identifier for a merchant account.
+        status:
+          type: string
+          readOnly: true
+          description: |
+            "The status of an invoice.
+
+              - **PAID**: An invoice the recipient has successfully paid for.
+              - **AUTHORIZED**: An invoice in the hospitality that has been authorized for payment. An Authorized transaction has a - alid credit card associated with the invoice and may have additional charges added.
+              - **UNPAID**: An invoice that the recipient has not successfully paid for.
+              - **CANCELED**: An invoice that the sender has canceled.
+              - **ARCHIVED**: An invoice set to appear in the archive. The Converge web UI sorts Archived invoices into the Archived tab. This flag is primarily useful for retaining documents for compliance without having them clutter the UI."
+          enum:
+            - PAID
+            - AUTHORIZED
+            - UNPAID
+            - CANCELED
+            - ARCHIVED
+          example: 'PAID'
+        invoiceDate:
+          type: string
+          description: The date an invoice was sent.
+          example: 2017/05/29
+          pattern: '\d\d\d\d\/[0-1][1-9]\/\d\d'
+        dueDate:
+          type: string
+          description: The date an invoice is due.
+          example: 2017/07/29
+          pattern: '\d\d\d\d\/[0-1][1-9]\/\d\d'
+        language:
+          type: string
+          description: |
+            "The language for the invoice being sent.
+
+              - **EN**: English
+              - **FR**: French"
+          minLength: 0
+          maxLength: 6
+          enum:
+            - EN
+            - FR
+        currency:
+          type: string
+          description: The currency for to displaying the invoice.
+          pattern: '[\d\D]{3}'
+          example: 'USD'
+          minLength: 3
+          maxLength: 3
+        invoiceNumber:
+          type: string
+          description: An invoice's unique indentification number.
+          minLength: 0
+          maxLength: 50
+        poNumber:
+          type: string
+          description: A post office box number.
+          minLength: 0
+          maxLength: 50
+        customerId:
+          type: string
+          description: A customer's unique identification number in Converge.
+          example: "1479916"
+          minLength: 0
+          maxLength: 50
+        firstName:
+          type: string
+          description: A customer's first name.
+          example: John
+          minLength: 0
+          maxLength: 50
+        lastName:
+          type: string
+          description: A customer's surname.
+          example: Johnson
+          minLength: 0
+          maxLength: 50
+        customerEmail:
+          type: string
+          description: A customer's email address.
+          example: JJ@Johnsonandsons.com
+        customerPhone:
+          type: string
+          description: A customer's telephone number
+          example: "5558675309"
+          minLength: 0
+          maxLength: 50
+        company:
+          type: string
+          description: A company name associated with the customer.
+          example: John Johnson and Sons LLC
+          minLength: 0
+          maxLength: 50
+        address1:
+          type: string
+          description: Primary address information in the billing address field.
+          example: 1337 Sleet St.
+          minLength: 0
+          maxLength: 100
+        address2:
+          type: string
+          description: Secondary address information in the billing address field.
+          example: Apt. 42
+          minLength: 0
+          maxLength: 100
+        city:
+          type: string
+          description: A city in the billing address field.
+          example: Johanesburg
+          minLength: 0
+          maxLength: 100
+        state:
+          type: string
+          description: The state code in the billing address field.
+          example: CA
+          minLength: 0
+          maxLength: 50
+        postalCode:
+          type: string
+          description: The postal code in the billing address field.
+          example: "80101"
+          minLength: 0
+          maxLength: 10
+        country:
+          type: string
+          description: The country in the billing address field.
+          example: United States of America
+          minLength: 0
+          maxLength: 3
+        shippingFirstName:
+          type: string
+          description: A customer's first name. Used when the billing information for a customer is different from their shipping information.
+          example: Nellie
+          minLength: 0
+          maxLength: 50
+        shippingLastName:
+          type: string
+          description: A customer's surname. Used when the billing information for a customer is different from their shipping information.
+          example: Nelson
+          minLength: 0
+          maxLength: 50
+        shippingCompany:
+          type: string
+          description: A company name associated with the customer. Used when the billing information for a customer is different from their shipping information.
+          example: Nell Nelson and Daughters LLC
+          minLength: 0
+          maxLength: 50
+        shippingAddress1:
+          type: string
+          description: Primary address information used when the billing information for a customer is different from their shipping information.
+          example: 1234 Electric Avenue
+          minLength: 0
+          maxLength: 50
+        shippingAddress2:
+          type: string
+          description: Secondary address information used when the billing information for a customer is different from their shipping information.
+          example: PO Box 42
+          minLength: 0
+          maxLength: 100
+        shippingCity:
+          type: string
+          description: City information used when the billing information for a customer is different from their shipping information.
+          example: Detroit
+          minLength: 0
+          maxLength: 100
+        shippingState:
+          type: string
+          description: State or province code used when the billing information for a customer is different from their shipping information.
+          example: MI
+          minLength: 0
+          maxLength: 50
+        shippingPostalCode:
+          type: string
+          description: Postal code used when the billing information for a customer is different from their shipping information.
+          example: "12345"
+          minLength: 0
+          maxLength: 10
+        shippingCountry:
+          type: string
+          description: Country name used when the billing information for a customer is different from their shipping information.
+          example: Moldova
+          minLength: 0
+          maxLength: 3
+        shippingEmail:
+          type: string
+          description: Email address used when the billing information for a customer is different from their shipping information.
+          example: anita.break@aeiou.io
+        customLabel1:
+          type: string
+          description: A custom label that a user defines in the Converge Web UI and can attach to an invoice.
+          example: A custom label
+          minLength: 0
+          maxLength: 100
+        customValue1:
+          type: string
+          description: |
+            A value associated with `customLabel1` that a user defines in the Converge Web UI and can attach to an invoice.
+          example: A custom value
+          minLength: 0
+          maxLength: 100
+        customLabel2:
+          type: string
+          description: A custom label that a user defines in the Converge Web UI and can attach to an invoice.
+          example: Another custom label
+          minLength: 0
+          maxLength: 100
+        customValue2:
+          type: string
+          description: A value associated with `customLabel2` that a user defines in the Converge Web UI and can attach to an invoice.
+          example: Twenty
+          minLength: 0
+          maxLength: 100
+        customLabel3:
+          type: string
+          description: A custom label that a user defines in the Converge Web UI and can attach to an invoice.
+          example: Yet another custom label
+          minLength: 0
+          maxLength: 100
+        customValue3:
+          type: string
+          description: A value associated with `customLabel3` that a user defines in the Converge Web UI and can attach to an invoice.
+          example: Thirty
+          minLength: 0
+          maxLength: 100
+        creditCardSupported:
+          type: boolean
+          description: Whether credit card transactions are supported on the Converge Hosted Payment Form for this invoice.
+          example: true
+        achSupported:
+          type: boolean
+          description: Whether ACH/E-Check transactions are supported on the Converge Hosted Payment Form for this invoice.
+          example: false
+        giftCardSupported:
+          type: boolean
+          description: Whether gift card transactions are supported on the Converge Hosted Payment Form for this invoice.
+          example: true
+        partialPaymentSupported:
+          type: boolean
+          description: Whether the terminal supports Partial Payments as an option.
+          example: true
+        tpassSupported:
+          type: boolean
+          description: Whether Converge Billing and Invoicing for Hospitality features are enabled.
+          example: true
+        daysBeforeCharge:
+          type: integer
+          format: int32
+          description: The number of days remaining before the scheduled Pay-By date.
+          example: 7
+          minimum: 0
+          maximum: 365
+        token:
+          type: string
+          description: Token for processing transactions using Converge's tokenization feature.
+          readOnly: true
+        expiryDate:
+          type: string
+          description: The expiration date associated with a customer's credit card. The first two digits represent the expiry month and the second two represent the year.
+          example: "1031"
+          readOnly: true
+        arrivalDate:
+          type: string
+          description: The date Converge will send an invoice will send to a customer.
+          example: 2017/07/29 15:10:00
+        sourceId:
+          type: string
+          description: the User ID for the last person to make a change to an invoice.
+          example: usernamington
+          minLength: 0
+          maxLength: 50
+        ccEmails:
+          type: string
+          description: "Email addresses to send carbon copies of the invoice to."
+          example: frank@hot.dog
+          minLength: 0
+          maxLength: 400
+        archivedFlag:
+          type: boolean
+          description: A flag marking an invoice as archived.
+          example: true
+          readOnly: true
+        eventPlannerFirstName:
+          type: string
+          description: The first name of the planner for an event.
+          example: Mikey
+          minLength: 0
+          maxLength: 50
+        eventPlannerLastName:
+          type: string
+          description: "The last name of the planner for an event."
+          example: "Mikelson"
+          minLength: 0
+          maxLength: 50
+        eventPlannerCompanyName:
+          type: string
+          description: "The Company name associated with an event planner."
+          example: "Kent's Events"
+        eventPlannerEventName:
+          type: string
+          description: The name of an event associated with an event planner.
+          example: "Event Listeners' Event Planning"
+        eventPlannerEventDate:
+          type: string
+          description: The date for a planned event.
+          example: "2025/01/22"
+        eventPlannerDepositDueDate:
+          type: string
+          description: The date an event planner's deposit is due by.
+          example: "2025/01/15"
+        eventPlannerEmail:
+          type: string
+          description: The Email address for the planner of an event.
+          example: "mikey@eventlisteners.com"
+        eventPlannerPhone:
+          type: string
+          description: Contact phone number for an event planner.
+          example: "5558675309"
+        cohoType:
+          type: string
+          description: |
+            The type of service transaction an invoice is marked as.
+          enum:
+            - STANDARD
+            - EVENT
+            - GUEST
+        eventOrGuestName:
+          type: string
+          description: The name of a guest or event.
+          example: Diane's Dog Rodeo
+        tokenizeCard:
+          type: boolean
+          description: Whether a card will be tokenized as part of the Converge tokenization feature.
+          example: true
+        schedulerId:
+          type: string
+          description: A scheduled invoice's ID.
+          format: uuid
+          readOnly: true
+        scheduledDate:
+          type: string
+          description: The date an invoice was scheduled on.
+          example: 2024/02/25
+        scheduledInvoiceFlag:
+          type: boolean
+          description: Marks whether an invoice is scheduled.
+          example: true
+        dateUpdated:
+          type: string
+          readOnly: true
+          description: The date the invoice was last updated.
+          example: 2024/01/04
+        dateCancelled:
+          type: string
+          readOnly: true
+          description: The date an invoice was canceled.
+          example: 2024/02/23
+        dateLastEmailed:
+          type: string
+          description: The date the invoice was last sent to a recipient.
+          example: 2024/02/23
+          readOnly: true
+    InvoiceDetail:
+      type: object
+      properties:
+        seqNo:
+          type: integer
+          description: The sequence number of an invoice detail.
+          format: int32
+          example: 1
+          readOnly: true
+        itemCode:
+          type: string
+          description: An item's unique identifier in the Converge product catalog.
+          example: p01-2
+          minLength: 0
+          maxLength: 50
+        itemDescription:
+          type: string
+          description: A brief description of an item.
+          example: Twelve kilograms of fresh off-brand soda.
+          minLength: 0
+          maxLength: 50
+        itemPrice:
+          type: number
+          description: The price of the item in the default unit of currency for the terminal.
+          example: 20.00
+        itemQuantity:
+          type: number
+          description: The number of a specific item in the invoice.
+          example: 5
+        taxExempt:
+          type: boolean
+          description: Whether an item is exempt from taxing.
+          example: true
+        discountAmount:
+          type: number
+          description: The amount a transaction will be discounted in the default unit of currency for the terminal.
+          example: 4
+        unitOfMeasure:
+          type: string
+          description: The unit used to measure a product for products that require a unit of measure.
+          example: "Kilograms"
+          minLength: 0
+          maxLength: 50
+        commodityCode:
+          type: string
+          description: The international commodity code for a product.
+          example: 44121900
+          minLength: 0
+          maxLength: 50
+        itemLineTotal:
+          type: number
+          description: The total cost, in the default unit of currency for the terminal, to purchase a number of units of a product.
+          example: 6.50
+    InvoiceSummary:
+      type: object
+      description: The subtotals, additional charges, final total, and total amount remaining to be paid.
+      required:
+        - invoiceTotalAmount
+      properties:
+        itemLineTotal:
+          type: number
+          description: The total cost, in the default unit of currency for the terminal, to purchase a number of units of a product.
+          example: 6.50
+        invoiceDiscount:
+          type: number
+          description: The discount applied to an invoice.
+          example: 5
+        taxType1:
+          type: string
+          description: The default tax to apply to an invoice.
+          example: Sales
+          minLength: 0
+          maxLength: 50
+        taxAmount1:
+          type: number
+          description: The total in units of default currency for a terminal of the added to the subtotal of an invoice.
+          example: 2.00
+        taxType2:
+          type: string
+          description: An additonal tax to apply to an invoice.
+          example: Municipal
+          minLength: 0
+          maxLength: 100
+        taxAmount2:
+          type: number
+          description: The total in units of default currency for a terminal of the added to the subtotal of an invoice.
+          example: 2.00
+        otherType:
+          type: string
+          description: The label for another type of additional charge added to an invoice.
+          example: Gratuity
+          minLength: 0
+          maxLength: 50
+        otherAmount:
+          type: number
+          description: Amount in units of default currency to add to the invoice's total.
+          example: 5
+        invoiceTotalAmount:
+          type: number
+          description: The total in units of default currency for a terminal to be charged for an invoice.
+          example: 5000.23
+        invoiceAmountDue:
+          type: number
+          description: The invoiceTotalAmount minus the total of the invoice currently paid.
+          example: 4500.00
+    InvoiceNote:
+      type: object
+      description: A note that you can attach to an invoice.
+      properties:
+        seqno:
+          description: The sequence number for the note that determines what order the note appears in.
+          example: 4
+          type: integer
+          format: int32
+          readOnly: true
+        text:
+          type: string
+          description: The body text of a note added to an invoice.
+          example: "Additional charges were added due to fire damage to hotel room."
+          minLength: 0
+          maxLength: 4000
+
+    Merchant:
+      type: object
+      description: All of a merchant's information and settings.
+      properties:
+        id:
+          type: string
+          description: A merchant's MID.
+          readOnly: true
+        name:
+          description: The name of the merchant.
+          type: string
+          example: Hopeford's Hostel and Hamburgers
+          readOnly: true
+        address1:
+          type: string
+          description: A merchant's primary address information.
+          example: 2020 Sleet St.
+        address2:
+          type: string
+          description: A merchant's secondary address information.
+          example: Unit 02
+
+        city:
+          type: string
+          description: The city for a merchant's address information.
+          example: Crete
+        state:
+          type: string
+          description: The state or province for a merchant's address information.
+          example: ON
+        country:
+          description: The country for a merchant's address information.
+          type: string
+          example: Canada
+        postalCode:
+          description: The Postal/ZIP Code for a merchant's address information.
+          type: string
+          example: 80101
+        contactEmail:
+          description: Merchant's Contact Email
+          type: string
+          example: mario.mario@business.biz
+        contactPhone:
+          description: Merchant's Phone
+          type: string
+          example: "555-867-5309"
+        website:
+          description: Merchant's Web Site
+          type: string
+          format: url
+        currency:
+          description: Merchant's Currency Type
+          type: string
+          example: USD
+          readOnly: true
+        creditCardSupported:
+          type: boolean
+          description: Whether a merchant profile accepts credit cards as a payment method.
+          readOnly: true
+        achSupported:
+          type: boolean
+          description: Whether a merchant profile accepts ACH/E-Checks as a payment method.
+          readOnly: true
+        giftCardSupported:
+          type: boolean
+          description: Whether a merchant profile accepts gift cards as a payment method.
+          readOnly: true
+        dccSupported:
+          type: boolean
+          description: Whether a merchant profile has [Dynamic Currency Conversion](#section/Overview/Payment-Options) available.
+          readOnly: true
+        mccSupported:
+          type: boolean
+          description: Whether a merchant profile has [Multiple Currency Conversion](#section/Overview/Payment-Options) available.
+          readOnly: true
+        partialPaymentSupported:
+          type: boolean
+          description: Whether the terminal supports Partial Payments as an option. Partial payments allow a customer to make a payment for less than the full amount on an invoice. This is useful for customers that are splitting an invoice between multiple payment methods or multiple cardholders.
+          readOnly: true
+        autoArchive:
+          description: Automatically Archive
+          type: boolean
+          readOnly: true
+        scheduledInvoicesSupported:
+          type: boolean
+          description: Whether a merchant profile has scheduled invoicing available. Scheduled invoices let a merchant schedule a delivery date for an invoice or quote.
+          readOnly: true
+          example: true
+        tokenizeCard:
+          type: boolean
+          description: Whether a merchant profile has card tokenization enabled. Tokenization is a requirement for the Billing and Invoicing API.
+          readOnly: true
+          example: true
+        daysBeforeCharge:
+          type: integer
+          format: int32
+          example: 5
+          minimum: 0
+          maximum: 365
+        tpassNotifyDaysBeforeCharge:
+          type: integer
+          format: int32
+          description: The default number of days an email will be sent to a customer with card on file ahead of charging the total on the invoice.
+          example: 5
+          minimum: 0
+          maximum: 365
+        tpassAlwaysCharge:
+          type: boolean
+          description: Whether Converge Billing and Invoicing for Hospitality transactions will always charge or not.
+          example: true
+        emailOptional:
+          type: boolean
+          description: Whether an emailed invoice is optional.
+          readOnly: true
+          example: true
+
+    OAuthToken:
+      properties:
+        accessToken:
+          type: string
+          description: Bearer token to be used as the Authorization value in subsequent requests
+          example: ATxH7SDvfv3n3dsjGTOBmWDW
+        tokenType:
+          type: string
+          description: The type of token being returned.
+          example: BearerToken
+        expiresIn:
+          type: integer
+          description: Number of seconds until token expiry
+          example: 899
+
+    OAuthError:
       properties:
         code:
-          type: integer
-          format: int32
-        type:
           type: string
+          description: Error code from a failed attempt to request a session token with the Billing and Invoicing API
         message:
           type: string
-    Cat:
-      description: A representation of a cat
-      allOf:
-        - $ref: "#/components/schemas/Pet"
-        - type: object
-          properties:
-            huntingSkill:
-              type: string
-              description: The measured skill for hunting
-              default: lazy
-              example: adventurous
-              enum:
-                - clueless
-                - lazy
-                - adventurous
-                - aggressive
-          required:
-            - huntingSkill
-    Category:
-      type: object
-      properties:
-        id:
-          description: Category ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
-        name:
-          description: Category name
-          type: string
-          minLength: 1
-        sub:
-          description: Test Sub Category
+          description: A message an error message providing more information on a given error code.
+        errors:
           type: object
+          description: An object containing all of the errors the request encountered.
           properties:
-            prop1:
+            message:
               type: string
-              description: Dumb Property
-      xml:
-        name: Category
-    Dog:
-      description: A representation of a dog
-      allOf:
-        - $ref: "#/components/schemas/Pet"
-        - type: object
-          properties:
-            packSize:
-              type: integer
-              format: int32
-              description: The size of the pack the dog is from
-              default: 1
-              minimum: 1
-          required:
-            - packSize
-    HoneyBee:
-      description: A representation of a honey bee
-      allOf:
-        - $ref: "#/components/schemas/Pet"
-        - type: object
-          properties:
-            honeyPerDay:
-              type: number
-              description: Average amount of honey produced per day in ounces
-              example: 3.14
-              multipleOf: .01
-          required:
-            - honeyPerDay
-    Id:
-      type: integer
-      format: int64
-      readOnly: true
-    Order:
-      type: object
-      properties:
-        id:
-          description: Order ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
-        petId:
-          description: Pet ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
-        quantity:
-          type: integer
-          format: int32
-          minimum: 1
-          default: 1
-        shipDate:
-          description: Estimated ship date
-          type: string
-          format: date-time
-        status:
-          type: string
-          description: Order Status
-          enum:
-            - placed
-            - approved
-            - delivered
-        complete:
-          description: Indicates whenever order was completed or not
-          type: boolean
-          default: false
-          readOnly: true
-        requestId:
-          description: Unique Request Id
-          type: string
-          writeOnly: true
-      xml:
-        name: Order
-    Pet:
-      type: object
-      required:
-        - name
-        - photoUrls
-      discriminator:
-        propertyName: petType
-        mapping:
-          cat: "#/components/schemas/Cat"
-          dog: "#/components/schemas/Dog"
-          bee: "#/components/schemas/HoneyBee"
-      properties:
-        id:
-          externalDocs:
-            description: "Find more info here"
-            url: "https://example.com"
-          description: Pet ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
-        category:
-          description: Categories this pet belongs to
-          allOf:
-            - $ref: "#/components/schemas/Category"
-        name:
-          description: The name given to a pet
-          type: string
-          example: Guru
-        photoUrls:
-          description: The list of URL to a cute photos featuring pet
-          type: array
-          maxItems: 20
-          xml:
-            name: photoUrl
-            wrapped: true
-          items:
-            type: string
-            format: url
-        friend:
-          allOf:
-            - $ref: "#/components/schemas/Pet"
-        tags:
-          description: Tags attached to the pet
-          type: array
-          minItems: 1
-          xml:
-            name: tag
-            wrapped: true
-          items:
-            $ref: "#/components/schemas/Tag"
-        status:
-          type: string
-          description: Pet status in the store
-          enum:
-            - available
-            - pending
-            - sold
-        petType:
-          description: Type of a pet
-          type: string
-      xml:
-        name: Pet
-    Tag:
-      type: object
-      properties:
-        id:
-          description: Tag ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
-        name:
-          description: Tag name
-          type: string
-          minLength: 1
-      xml:
-        name: Tag
-    User:
-      type: object
-      properties:
-        id:
-          $ref: "#/components/schemas/Id"
-        pet:
-          oneOf:
-            - $ref: "#/components/schemas/Pet"
-            - $ref: "#/components/schemas/Tag"
-        username:
-          description: User supplied username
-          type: string
-          minLength: 4
-          example: John78
-        firstName:
-          description: User first name
-          type: string
-          minLength: 1
-          example: John
-        lastName:
-          description: User last name
-          type: string
-          minLength: 1
-          example: Smith
-        email:
-          description: User email address
-          type: string
-          format: email
-          example: john.smith@example.com
-        password:
-          type: string
-          description: >-
-            User password, MUST contain a mix of upper and lower case letters,
-            as well as digits
-          format: password
-          minLength: 8
-          pattern: "/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/"
-          example: drowssaP123
-        phone:
-          description: User phone number in international format
-          type: string
-          pattern: '/^\+(?:[0-9]-?){6,14}[0-9]$/'
-          example: +1-202-555-0192
-        userStatus:
-          description: User status
-          type: integer
-          format: int32
-      xml:
-        name: User
-  requestBodies:
-    Pet:
-      content:
-        application/json:
-          schema:
-            allOf:
-              - description: My Pet
-                title: Pettie
-              - $ref: "#/components/schemas/Pet"
-        application/xml:
-          schema:
-            type: "object"
-            properties:
-              name:
-                type: string
-                description: hooray
-      description: Pet object that needs to be added to the store
-      required: true
-    UserArray:
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/User"
-      description: List of user object
-      required: true
-  securitySchemes:
-    petstore_auth:
-      description: |
-        Get access to data while protecting your account credentials.
-        OAuth2 is also a safer and more secure way to give you access.
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: "http://petstore.swagger.io/api/oauth/dialog"
-          scopes:
-            "write:pets": modify pets in your account
-            "read:pets": read your pets
-    api_key:
-      description: >
-        For this sample, you can use the api key `special-key` to test the
-        authorization filters.
-      type: apiKey
-      name: api_key
-      in: header
-  examples:
-    Order:
-      value:
-        quantity: 1,
-        shipDate: 2018-10-19T16:46:45Z,
-        status: placed,
-        complete: false

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { OpenAPIInfo } from '../../types';
 import { LinkWrap, LogoImgEl, LogoWrap } from './styled.elements';
 
+
 @observer
 export class ApiLogo extends React.Component<{ info: OpenAPIInfo }> {
 	render() {
@@ -21,6 +22,7 @@ export class ApiLogo extends React.Component<{ info: OpenAPIInfo }> {
 		return (
 			<LogoWrap style={{ backgroundColor: logoInfo.backgroundColor }}>
 				{logoHref ? LinkWrap(logoHref)(logo) : logo}
+
 			</LogoWrap>
 		);
 	}

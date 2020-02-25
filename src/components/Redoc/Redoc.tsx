@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { ThemeProvider } from '../../styled-components';
 import { OptionsProvider } from '../OptionsProvider';
+import { BrowserRouter, Link, Switch } from 'react-router-dom';
 
 import { AppStore } from '../../services';
 import { ApiLogo } from '../ApiLogo/ApiLogo';
@@ -49,6 +50,10 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
     this.setState({ item: menuItem });
   };
 
+  onLogoClick = () =>{
+    window.location.reload();
+  }
+
   render() {
     const {
       store: { spec, menu, options, search, marker },
@@ -56,12 +61,17 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
     const store = this.props.store;
 
     return (
+    <BrowserRouter>
+    <Switch>
       <ThemeProvider theme={options.theme}>
         <StoreProvider value={this.props.store}>
           <OptionsProvider value={options}>
             <RedocWrap className="redoc-wrap">
               <StickyResponsiveSidebar menu={menu} className="menu-content">
                 <ApiLogo info={spec.info} />
+                  <Link to="/" onClick={this.onLogoClick}> <img style={{ height: '100px', width:'250px',margin:'5px' }}
+                    src="https://raw.githubusercontent.com/Redocly/redoc/master/docs/images/redoc-logo.png"
+                  /></Link>
                 {(!options.disableSearch && (
                   <SearchBox
                     search={search!}
@@ -86,6 +96,8 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
           </OptionsProvider>
         </StoreProvider>
       </ThemeProvider>
+      </Switch>
+    </BrowserRouter>
     );
   }
 }
