@@ -66,7 +66,7 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
             <RedocWrap className="redoc-wrap">
               <StickyResponsiveSidebar menu={menu} className="menu-content">
                 <ApiLogo info={spec.info} />
-                  <img onClick={this.onLogoClick} style={{ height: '100px', width:'250px',margin:'5px' }}
+                  <img onClick={this.onLogoClick} style={{ height: '100px', width:'250px',margin:'5px', cursor:'pointerss' }}
                     src="https://raw.githubusercontent.com/Redocly/redoc/master/docs/images/redoc-logo.png"
                   />
                 {(!options.disableSearch && (

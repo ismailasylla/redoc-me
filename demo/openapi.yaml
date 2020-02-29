@@ -166,6 +166,8 @@ tags:
   - name: Merchant
     description: >-
       Provides access to the merchant object. The merchant object contains the settings for a merchant account.
+      isExtednedDescription : maLSDLasdlaNSD.
+
 
   - name: Invoices
     description: |

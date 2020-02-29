@@ -16,7 +16,6 @@ export class GroupModel implements IMenuItem {
   name: string;
   description?: string;
   type: MenuItemGroupType;
-
   items: ContentItemModel[] = [];
   parent?: GroupModel;
   externalDocs?: OpenAPIExternalDocumentation;
@@ -28,6 +27,7 @@ export class GroupModel implements IMenuItem {
 
   depth: number;
   level: number;
+  isExtednedDescription: boolean;
   //#endregion
 
   constructor(
@@ -43,6 +43,7 @@ export class GroupModel implements IMenuItem {
 
     // remove sections from markdown, same as in ApiInfo
     this.description = tagOrGroup.description || '';
+    this.isExtednedDescription = tagOrGroup.isExtednedDescription = true;
 
     const items = (tagOrGroup as MarkdownHeading).items;
     if (items && items.length) {

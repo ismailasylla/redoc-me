@@ -8,6 +8,7 @@ import { titleize } from '../../utils/helpers';
 import { Markdown } from '../Markdown/Markdown';
 import { StyledMarkdownBlock } from '../Markdown/styled.elements';
 import Mermaid from '../Mermaid/Mermaid';
+import XextendedDescription  from '../X-ExtendedDescription/XextendedDescription';
 
 const AUTH_TYPES = {
   oauth2: 'OAuth2',
@@ -129,6 +130,7 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
                 ) : null}
               </tbody>
             </table>
+            <XextendedDescription/>
           </StyledMarkdownBlock>
         </Row>
       </Section>

@@ -46,6 +46,7 @@ export class ContentItems extends React.Component<
       isLastItem: false,
       isFirstItem: true,
       sectionsCount: this.getNextSectionsCount(index, tempItems),
+      isExtendedDescription: true
     };
   }
 
@@ -198,6 +199,7 @@ export class ContentItems extends React.Component<
     if (items.length === 0) {
       return null;
     }
+    console.log(items);
 
     return (
       <div>
@@ -234,7 +236,9 @@ export interface IYoState {
   isLastItem: boolean;
   isFirstItem: boolean;
   sectionsCount: number;
+  isExtendedDescription: boolean;
 }
+
 
 @observer
 export class ContentItem extends React.Component<ContentItemProps> {
@@ -285,6 +289,7 @@ export class SectionItem extends React.Component<ContentItemProps> {
             <Header>
               <ShareLink to={this.props.item.id} />
               {name}
+
             </Header>
           </MiddlePanel>
         </Row>
@@ -293,7 +298,6 @@ export class SectionItem extends React.Component<ContentItemProps> {
           <Row>
             <MiddlePanel>
               <ExternalDocumentation externalDocs={externalDocs} />
-
             </MiddlePanel>
           </Row>
         )}
