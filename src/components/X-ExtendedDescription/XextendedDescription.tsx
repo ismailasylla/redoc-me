@@ -85,9 +85,20 @@ class XextendedDescription extends React.Component {
                       </span>
                     </td>
                   </tr>
+                  <tr id="errors-429-TooManyRequests">
+                    <th className="table-row-property">
+                      <span>429 - Too Many Requests</span>
+                    </th>
+                    <td className="table-row-definition">
+                      <span>
+                        Too many requests hit the API too quickly. We recommend an exponential
+                        backoff of your requests.
+                      </span>
+                    </td>
+                  </tr>
                   <tr id="errors-500502503504-ServerErrors">
                     <th className="table-row-property">
-                      <span>500, 502, 503, 504 - Server Errors</span>
+                      <span>500, 502, 503, 504 - Server Errors...</span>
                     </th>
                     <td className="table-row-definition">
                       <span>Something went wrong on Stripe's end. (These are rare.)</span>
