@@ -43,7 +43,7 @@ export class GroupModel implements IMenuItem {
 
     // remove sections from markdown, same as in ApiInfo
     this.description = tagOrGroup.description || '';
-    this.extendedDescription = tagOrGroup.extendedDescription || this.extendedDescription;
+    this.extendedDescription = tagOrGroup.extendedDescription || '';
 
     const items = (tagOrGroup as MarkdownHeading).items;
     if (items && items.length) {
