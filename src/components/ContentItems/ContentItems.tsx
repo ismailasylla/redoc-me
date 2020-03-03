@@ -14,7 +14,6 @@ import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
 
 
-
 @observer
 export class ContentItems extends React.Component<
   { items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore },
@@ -46,7 +45,6 @@ export class ContentItems extends React.Component<
       isLastItem: false,
       isFirstItem: true,
       sectionsCount: this.getNextSectionsCount(index, tempItems),
-      isExtendedDescription: true
     };
   }
 
@@ -236,7 +234,6 @@ export interface IYoState {
   isLastItem: boolean;
   isFirstItem: boolean;
   sectionsCount: number;
-  isExtendedDescription: boolean;
 }
 
 
@@ -279,12 +276,14 @@ const middlePanelWrap = component => <MiddlePanel compact={true}>{component}</Mi
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
   render() {
-    const { name, description, externalDocs, level } = this.props.item as GroupModel;
+    const { name, description, externalDocs, level, extendedDescription } = this.props.item as GroupModel;
+
 
     const Header = level === 2 ? H2 : H1;
     return (
       <>
         <Row>
+    <h1>{extendedDescription}</h1>
           <MiddlePanel compact={false}>
             <Header>
               <ShareLink to={this.props.item.id} />
@@ -293,7 +292,7 @@ export class SectionItem extends React.Component<ContentItemProps> {
             </Header>
           </MiddlePanel>
         </Row>
-        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} />
+        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} extendedDescription={extendedDescription}/>
         {externalDocs && (
           <Row>
             <MiddlePanel>

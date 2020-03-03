@@ -5,14 +5,14 @@ class XextendedDescription extends React.Component {
     return (
       <div>
         <h1 style={{ color: 'white' }}>XextendedDescription</h1>
-        <div className="method-example-part">
+        <div className="method-example-part" style={{width:'693px', marginLeft:'3px'}}>
           <div className="method-example-table">
             <div className="method-example-table-topbar" style={{backgroundColor:'#2a2f45', padding:'10px', borderRadius:'8px', marginBottom:'-23px'}}>
               <div className="method-example-table-title" style={{color:'#9199a8'}}>HTTP status code summary</div>
             </div>
-            <section className="table">
+            <section className="table" style={{padding:'5px'}}>
               <table className="table-container" style={{borderBottomLeftRadius:'8px', borderBottomRightRadius:'8px'}}>
-                <tbody style={{backgroundColor:"#00FF00"}}>
+                <tbody >
                   <tr id="errors-200-OK">
                     <th className="table-row-property">
                       <span>200 - OK</span>

@@ -154,7 +154,6 @@ info:
 tags:
   - name: Authentication
     description: |
-
       The Billing and Invoicing API uses the OAuth 2.0 protocol. This means authentication will be a two step process.
       1. Get a token via the /token endpoint. Send your client credentials in the header. Elavon will return an access token.
       2. Send the access token in the header for all other operations.
@@ -162,12 +161,11 @@ tags:
       Your consumer key and secret key will be provided by Elavon when you start your project. These credentials will be different for testing and for production.
 
       Never share your secret key. Keep it guarded and secure.
+    extendedDescription: Testing extendedDescription
 
   - name: Merchant
     description: >-
       Provides access to the merchant object. The merchant object contains the settings for a merchant account.
-      isExtednedDescription : maLSDLasdlaNSD.
-
 
   - name: Invoices
     description: |
@@ -648,7 +646,6 @@ components:
         clientCredentials:
           tokenUrl: /token
           scopes: {}
-
   headers:
     Location:
       description: Provides the location of a resource.

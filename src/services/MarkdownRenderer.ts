@@ -33,7 +33,7 @@ export interface MarkdownHeading {
   level: number;
   items?: MarkdownHeading[];
   description?: string;
-  isExtednedDescription: string;
+  extendedDescription?: string;
 }
 
 export function buildComponentComment(name: string) {

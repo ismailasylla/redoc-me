@@ -7,8 +7,7 @@ import { OpenAPISecurityScheme } from '../../types';
 import { titleize } from '../../utils/helpers';
 import { Markdown } from '../Markdown/Markdown';
 import { StyledMarkdownBlock } from '../Markdown/styled.elements';
-import Mermaid from '../Mermaid/Mermaid';
-import XextendedDescription  from '../X-ExtendedDescription/XextendedDescription';
+// import Mermaid from '../Mermaid/Mermaid';
 
 const AUTH_TYPES = {
   oauth2: 'OAuth2',
@@ -77,7 +76,7 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               <ShareLink to={scheme.sectionId} />
               {scheme.id}
             </H2>
-            <Markdown source={scheme.description || ''} />
+            {/* <Markdown source={scheme.description || ''} />
             <Mermaid
               chart={`graph LR
               A[Hard edge] -->|Link text| B(Round edge)
@@ -86,7 +85,7 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               C -->|Two| E[Result two]
 
               `}
-            />
+            /> */}
           </MiddlePanel>
           <StyledMarkdownBlock style={{ width: '450px', marginLeft: '10px' }}>
             <table className="security-details">
@@ -130,7 +129,6 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
                 ) : null}
               </tbody>
             </table>
-            <XextendedDescription/>
           </StyledMarkdownBlock>
         </Row>
       </Section>

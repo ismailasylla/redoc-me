@@ -249,7 +249,7 @@ export interface OpenAPISecurityScheme {
 export interface OpenAPITag {
   name: string;
   description?: string;
-  isExtednedDescription : boolean;
+  extendedDescription?: string;
   externalDocs?: OpenAPIExternalDocumentation;
   'x-displayName'?: string;
 }

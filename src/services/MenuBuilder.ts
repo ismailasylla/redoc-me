@@ -40,6 +40,7 @@ export class MenuBuilder {
   ): ContentItemModel[] {
     const spec = parser.spec;
 
+    console.log(spec);
     const items: ContentItemModel[] = [];
     const tagsMap = MenuBuilder.getTagsWithOperations(spec);
     items.push(...MenuBuilder.addMarkdownItems(spec.info.description || '', undefined, 1, options));
@@ -198,6 +199,7 @@ export class MenuBuilder {
    */
   static getTagsWithOperations(spec: OpenAPISpec): TagsInfoMap {
     const tags: TagsInfoMap = {};
+    console.log(tags);
     for (const tag of spec.tags || []) {
       tags[tag.name] = { ...tag, operations: [] };
     }
