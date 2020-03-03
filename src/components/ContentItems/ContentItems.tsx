@@ -283,7 +283,6 @@ export class SectionItem extends React.Component<ContentItemProps> {
     return (
       <>
         <Row>
-    <h1>{extendedDescription}</h1>
           <MiddlePanel compact={false}>
             <Header>
               <ShareLink to={this.props.item.id} />

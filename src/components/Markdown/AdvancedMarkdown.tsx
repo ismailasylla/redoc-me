@@ -34,56 +34,19 @@ export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
                 <div className="method-example-part" >
                   <div className="method-example-table">
                     <section className="table" style={{ padding: '5px' }}>
-                      <table className="table-container" style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px' }}>
-                      <h1 style={{ color: 'white', display: 'flex',alignItems: 'center',justifyContent: 'center' }}>ExtendedDescription Table</h1>
                         <div className="method-example-table-topbar" style={{ backgroundColor: '#2a2f45', padding: '10px', borderTopLeftRadius: '8px',borderTopRightRadius: '8px'}}>
                           <div className="method-example-table-title" style={{ color: '#9199a8', padding: '15px' }}><span style={{
-                            display: 'flex',alignItems: 'center',justifyContent: 'center'}}>HTTP status code summary {this.props.extendedDescription}</span></div>
+                            display: 'flex',alignItems: 'center',justifyContent: 'center'}}>Extended Description Table</span></div>
                         </div>
-                        <tbody style={{ marginBottom: '10px' }} >
+                      <table className="table-container" style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', margin:'auto' }}>
+                      {/* <h1 style={{ color: 'white', display: 'flex',alignItems: 'center',justifyContent: 'center' }}>ExtendedDescription Table</h1> */}
+                        <tbody >
                           <tr id="errors-200-OK">
                             <th className="table-row-property">
-                              <span>200 - OK</span>
+                              <span>Extended Description</span>
                             </th>
                             <td className="table-row-definition">
-                              <span>Everything worked as expected.</span>
-                            </td>
-                          </tr>
-                          <tr id="errors-400-BadRequest">
-                            <th className="table-row-property">
-                              <span>400 - Bad Request</span>
-                            </th>
-                            <td className="table-row-definition">
-                              <span>
-                                The request was unacceptable, often due to missing a required parameter.
-                      </span>
-                            </td>
-                          </tr>
-                          <tr id="errors-401-Unauthorized">
-                            <th className="table-row-property">
-                              <span>401 - Unauthorized</span>
-                            </th>
-                            <td className="table-row-definition">
-                              <span>No valid API key provided.</span>
-                            </td>
-                          </tr>
-                          <tr id="errors-402-RequestFailed">
-                            <th className="table-row-property">
-                              <span>402 - Request Failed</span>
-                            </th>
-                            <td className="table-row-definition">
-                              <span>The parameters were valid but the request failed.</span>
-                            </td>
-                          </tr>
-                          <tr id="errors-409-Conflict">
-                            <th className="table-row-property">
-                              <span>409 - Conflict</span>
-                            </th>
-                            <td className="table-row-definition">
-                              <span>
-                                The request conflicts with another request (perhaps due to using the same
-                                idempotent key).
-                      </span>
+                              <span>{this.props.extendedDescription}</span>
                             </td>
                           </tr>
                         </tbody>

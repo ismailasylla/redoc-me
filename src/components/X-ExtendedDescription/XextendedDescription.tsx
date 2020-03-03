@@ -8,7 +8,7 @@ class XextendedDescription extends React.Component {
         <div className="method-example-part" style={{width:'693px', marginLeft:'3px'}}>
           <div className="method-example-table">
             <div className="method-example-table-topbar" style={{backgroundColor:'#2a2f45', padding:'10px', borderRadius:'8px', marginBottom:'-23px'}}>
-              <div className="method-example-table-title" style={{color:'#9199a8'}}>HTTP status code summary</div>
+    <div className="method-example-table-title" style={{color:'#9199a8'}}>HTTP status code summary</div>
             </div>
             <section className="table" style={{padding:'5px'}}>
               <table className="table-container" style={{borderBottomLeftRadius:'8px', borderBottomRightRadius:'8px'}}>
