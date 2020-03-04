@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { AppStore, MarkdownRenderer, RedocNormalizedOptions } from '../../services';
-import { StyledMarkdownBlock } from '../Markdown/styled.elements';
+import { DarkRightPanel } from '../../common-elements';
 import { BaseMarkdownProps } from './Markdown';
 import { SanitizedMarkdownHTML } from './SanitizedMdBlock';
 
@@ -29,33 +29,33 @@ export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
           <Row>
             <MiddlePanel>
             </MiddlePanel>
-            <StyledMarkdownBlock >
-              <div style={{ width: '450px', marginLeft: '10px' }}>
-                <div className="method-example-part" >
-                  <div className="method-example-table">
-                    <section className="table" style={{ padding: '5px' }}>
-                        <div className="method-example-table-topbar" style={{ backgroundColor: '#2a2f45', padding: '10px', borderTopLeftRadius: '8px',borderTopRightRadius: '8px'}}>
-                          <div className="method-example-table-title" style={{ color: '#9199a8', padding: '15px' }}><span style={{
-                            display: 'flex',alignItems: 'center',justifyContent: 'center'}}>Extended Description Table</span></div>
-                        </div>
-                      <table className="table-container" style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', margin:'auto' }}>
+            {
+              this.props.extendedDescription ?
+            <DarkRightPanel>
+              <div>
+                <div>
+                  <div>
+                    <div className="method-example-table-topbar" style={{ backgroundColor: '#2a2f45', padding: '10px', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+                      <div className="method-example-table-title" style={{ color: '#9199a8', padding: '15px' }}><span style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                      }}>Extended Description Table</span></div>
+                    </div>
+                    <table className="table-container" style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', margin: 'auto', backgroundColor: 'white', color: 'black' }}>
                       {/* <h1 style={{ color: 'white', display: 'flex',alignItems: 'center',justifyContent: 'center' }}>ExtendedDescription Table</h1> */}
-                        <tbody >
-                          <tr id="errors-200-OK">
-                            <th className="table-row-property">
-                              <span>Extended Description</span>
-                            </th>
-                            <td className="table-row-definition">
-                              <span>{this.props.extendedDescription}</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </section>
+                      <tbody>
+                        <tr>
+                          <td>
+                            {this.props.extendedDescription}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-            </StyledMarkdownBlock>
+            </DarkRightPanel>
+            : null
+            }
           </Row>
         </Section>
 

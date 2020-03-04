@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import { SecuritySchemesModel } from '../../services/models';
 
-import { H2, MiddlePanel, Row, Section, ShareLink } from '../../common-elements';
+import { H2, MiddlePanel, Row, Section, ShareLink, DarkRightPanel } from '../../common-elements';
 import { OpenAPISecurityScheme } from '../../types';
 import { titleize } from '../../utils/helpers';
 import { Markdown } from '../Markdown/Markdown';
 import { StyledMarkdownBlock } from '../Markdown/styled.elements';
+import { margin } from 'polished';
 // import Mermaid from '../Mermaid/Mermaid';
 
 const AUTH_TYPES = {
@@ -21,6 +22,9 @@ export interface OAuthFlowProps {
   flow: OpenAPISecurityScheme['flows'][keyof OpenAPISecurityScheme['flows']];
 }
 
+const textColor = {
+  color:'black'
+}
 export class OAuthFlow extends React.PureComponent<OAuthFlowProps> {
   render() {
     const { type, flow } = this.props;
@@ -86,10 +90,11 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
 
               `}
             /> */}
-          </MiddlePanel>
-          <StyledMarkdownBlock style={{ width: '450px', marginLeft: '10px' }}>
+            </MiddlePanel>
+            <DarkRightPanel>
+          <StyledMarkdownBlock>
             <table className="security-details">
-              <tbody>
+              <tbody style={textColor}>
                 <tr>
                   <th> Security Scheme Type </th>
                   <td> {AUTH_TYPES[scheme.type] || scheme.type} </td>
@@ -130,6 +135,7 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               </tbody>
             </table>
           </StyledMarkdownBlock>
+            </DarkRightPanel>
         </Row>
       </Section>
     ));
