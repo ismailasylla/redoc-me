@@ -99,11 +99,11 @@ const defaultTheme: ThemeInterface = {
     fontWeightRegular: '400',
     fontWeightBold: '600',
     fontWeightLight: '300',
-    fontFamily: 'Helvetica, Arial, Sans-Serif',
+    fontFamily: 'Roboto, sans-serif',
     smoothing: 'antialiased',
     optimizeSpeed: true,
     headings: {
-      fontFamily: 'Helvetica, Arial, Sans-Serif',
+      fontFamily: 'Montserrat, sans-serif',
       fontWeight: '400',
       lineHeight: '1.6em',
     },
@@ -124,14 +124,12 @@ const defaultTheme: ThemeInterface = {
   },
   menu: {
     width: '260px',
-    backgroundColor: 'rgb(240, 240, 240)',
-    textColor: '#0A1361',
-
+    backgroundColor: '#fafafa',
+    textColor: '#333333',
     activeTextColor: theme =>
       theme.menu.textColor !== defaultTheme.menu!.textColor
         ? theme.menu.textColor
-        : theme.colors.error.main,
-
+        : theme.colors.primary.main,
     groupItems: {
       textTransform: 'uppercase',
     },
@@ -149,7 +147,7 @@ const defaultTheme: ThemeInterface = {
     gutter: '2px',
   },
   rightPanel: {
-    backgroundColor: '#1B1F37',
+    backgroundColor: '#263238',
     width: '40%',
     textColor: '#ffffff',
   },
@@ -301,8 +299,6 @@ export interface ResolvedThemeInterface {
   menu: {
     width: string;
     backgroundColor: string;
-    backgroundImage: string;
-    background:string;
     textColor: string;
     activeTextColor: string;
     groupItems: {
@@ -339,4 +335,3 @@ export type AdvancedThemeDeep<T> = T extends primitive
   : AdvancedThemeObject<T>;
 export type AdvancedThemeObject<T> = { [P in keyof T]?: AdvancedThemeDeep<T[P]> };
 export type ThemeInterface = AdvancedThemeObject<ResolvedThemeInterface>;
-

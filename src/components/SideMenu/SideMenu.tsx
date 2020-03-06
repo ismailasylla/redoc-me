@@ -8,45 +8,41 @@ import { MenuItems } from './MenuItems';
 import { PerfectScrollbarWrap } from '../../common-elements/perfect-scrollbar';
 
 @observer
-export class SideMenu extends React.Component<{
-	menu: MenuStore;
-	onItemClick: (item: IMenuItem) => void;
-	className?: string;
-}> {
-	static contextType = OptionsContext;
-	private _updateScroll?: () => void;
+export class SideMenu extends React.Component<{ menu: MenuStore; onItemClick: (item: IMenuItem) => void; className?: string }> {
+  static contextType = OptionsContext;
+  private _updateScroll?: () => void;
 
-	render() {
-		const store = this.props.menu;
-		return (
-			<PerfectScrollbarWrap
-				updateFn={this.saveScrollUpdate}
-				className={this.props.className}
-				options={{
-					wheelPropagation: false
-				}}
-			>
-				<MenuItems items={store.items} onActivate={this.activate} root={true} />
-			</PerfectScrollbarWrap>
-		);
-	}
+  render() {
+    const store = this.props.menu;
+    return (
+      <PerfectScrollbarWrap
+        updateFn={this.saveScrollUpdate}
+        className={this.props.className}
+        options={{
+          wheelPropagation: false,
+        }}
+      >
+        <MenuItems items={store.items} onActivate={this.activate} root={true} />
+      </PerfectScrollbarWrap>
+    );
+  }
 
-	activate = (item: IMenuItem) => {
-		if (item && item.active && this.context.menuToggle) {
-			return item.expanded ? item.collapse() : item.expand();
-		}
+  activate = (item: IMenuItem) => {
+    if (item && item.active && this.context.menuToggle) {
+      return item.expanded ? item.collapse() : item.expand();
+    }
 
-		this.props.menu.activateAndScroll(item, true);
-		setTimeout(() => {
-			if (this._updateScroll) {
-				this._updateScroll();
-			}
-		});
+    this.props.menu.activateAndScroll(item, true);
+    setTimeout(() => {
+      if (this._updateScroll) {
+        this._updateScroll();
+      }
+    });
 
-		this.props.onItemClick(item);
-	};
+    this.props.onItemClick(item);
+  };
 
-	private saveScrollUpdate = (upd) => {
-		this._updateScroll = upd;
-	};
+  private saveScrollUpdate = upd => {
+    this._updateScroll = upd;
+  };
 }

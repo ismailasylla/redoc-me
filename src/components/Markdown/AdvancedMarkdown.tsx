@@ -1,65 +1,55 @@
 import * as React from 'react';
 
 import { AppStore, MarkdownRenderer, RedocNormalizedOptions } from '../../services';
-import { DarkRightPanel } from '../../common-elements';
 import { BaseMarkdownProps } from './Markdown';
-import { SanitizedMarkdownHTML } from './SanitizedMdBlock';
-
-import { MiddlePanel, Row, Section } from '../../common-elements';
+import { SanitizedMarkdownHTML, ExtendedSanitizedMarkdownHTML } from './SanitizedMdBlock';
 
 import { OptionsConsumer } from '../OptionsProvider';
 import { StoreConsumer } from '../StoreBuilder';
 
+import { DarkRightPanelExtended, MiddlePanelExtended, Row } from '../../common-elements';
+import styled from '../../styled-components';
+
+const OperationRow = styled(Row)`
+  backface-visibility: hidden;
+  contain: content;
+
+  overflow: hidden;
+`;
+
 export interface AdvancedMarkdownProps extends BaseMarkdownProps {
+  extendedDescription: string;
   htmlWrap?: (part: JSX.Element) => JSX.Element;
 }
 
 export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
-
-
   render() {
-    return (
-      <>
-        <OptionsConsumer>
-          {options => (
-            <StoreConsumer>{store => this.renderWithOptionsAndStore(options, store)}</StoreConsumer>
-          )}
-        </OptionsConsumer>
-        <Section>
-          <Row>
-            <MiddlePanel>
-            </MiddlePanel>
-            {
-              this.props.extendedDescription ?
-            <DarkRightPanel>
-              <div>
-                <div>
-                  <div>
-                    <div className="method-example-table-topbar" style={{ backgroundColor: '#2a2f45', padding: '10px', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
-                      <div className="method-example-table-title" style={{ color: '#9199a8', padding: '15px' }}><span style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                      }}>Extended Description Table</span></div>
-                    </div>
-                    <table className="table-container" style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', margin: 'auto', backgroundColor: 'white', color: 'black' }}>
-                      {/* <h1 style={{ color: 'white', display: 'flex',alignItems: 'center',justifyContent: 'center' }}>ExtendedDescription Table</h1> */}
-                      <tbody>
-                        <tr>
-                          <td>
-                            {this.props.extendedDescription}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </DarkRightPanel>
-            : null
-            }
-          </Row>
-        </Section>
+    const { extendedDescription } = this.props;
+    var isExtendedDescription = false;
 
-      </>
+    if (extendedDescription.length > 0) {
+      isExtendedDescription = true;
+    }
+
+    return (
+      <OperationRow>
+        <MiddlePanelExtended>
+
+          <OptionsConsumer>
+            {options => (
+              <StoreConsumer>{store => this.renderWithOptionsAndStore(options, store)}</StoreConsumer>
+            )}
+          </OptionsConsumer>
+
+        </MiddlePanelExtended>
+
+        {isExtendedDescription ? <DarkRightPanelExtended><OptionsConsumer>
+          {options => (
+            <StoreConsumer>{store => this.renderExtendedWithOptionsAndStore(options, store)}</StoreConsumer>
+          )}
+        </OptionsConsumer></DarkRightPanelExtended> : null}
+
+      </OperationRow>
     );
   }
 
@@ -83,7 +73,34 @@ export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
           { key: idx },
         );
       }
+
+      return <part.component key={idx} {...{ ...part.props, ...part.propsSelector(store) }} />;
+    });
+  }
+
+  renderExtendedWithOptionsAndStore(options: RedocNormalizedOptions, store?: AppStore) {
+    const { extendedDescription, htmlWrap = i => i } = this.props;
+    if (!store) {
+      throw new Error('When using components in markdown, store prop must be provided');
+    }
+
+    const renderer = new MarkdownRenderer(options);
+    const extParts = renderer.renderMdWithComponents(extendedDescription);
+
+    if (!extParts.length) {
+      return null;
+    }
+
+    return extParts.map((part, idx) => {
+      if (typeof part === 'string') {
+        return React.cloneElement(
+          htmlWrap(<ExtendedSanitizedMarkdownHTML html={part} inline={false} compact={false} />),
+          { key: idx },
+        );
+      }
+
       return <part.component key={idx} {...{ ...part.props, ...part.propsSelector(store) }} />;
     });
   }
 }
+

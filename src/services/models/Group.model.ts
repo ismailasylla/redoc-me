@@ -10,79 +10,75 @@ import { IMenuItem, MenuItemGroupType } from '../MenuStore';
  * Operations Group model ready to be used by components
  */
 export class GroupModel implements IMenuItem {
-  //#region IMenuItem fields
-  id: string;
-  absoluteIdx?: number;
-  name: string;
-  description?: string;
-  extendedDescription?: string;
-  type: MenuItemGroupType;
-  items: ContentItemModel[] = [];
-  parent?: GroupModel;
-  externalDocs?: OpenAPIExternalDocumentation;
+	//#region IMenuItem fields
+	id: string;
+	absoluteIdx?: number;
+	name: string;
+	description?: string;
+	extendedDescription?: string;
+	type: MenuItemGroupType;
 
-  @observable
-  active: boolean = false;
-  @observable
-  expanded: boolean = false;
+	items: ContentItemModel[] = [];
+	parent?: GroupModel;
+	externalDocs?: OpenAPIExternalDocumentation;
 
-  depth: number;
-  level: number;
-  //#endregion
+	@observable active: boolean = false;
+	@observable expanded: boolean = false;
 
-  constructor(
-    type: MenuItemGroupType,
-    tagOrGroup: OpenAPITag | MarkdownHeading,
-    parent?: GroupModel,
-  ) {
-    // markdown headings already have ids calculated as they are needed for heading anchors
-    this.id = (tagOrGroup as MarkdownHeading).id || type + '/' + safeSlugify(tagOrGroup.name);
-    this.type = type;
-    this.name = tagOrGroup['x-displayName'] || tagOrGroup.name;
-    this.level = (tagOrGroup as MarkdownHeading).level || 1;
+	depth: number;
+	level: number;
+	//#endregion
 
-    // remove sections from markdown, same as in ApiInfo
-    this.description = tagOrGroup.description || '';
-    this.extendedDescription = tagOrGroup.extendedDescription || '';
+	constructor(type: MenuItemGroupType, tagOrGroup: OpenAPITag | MarkdownHeading, parent?: GroupModel) {
+		// markdown headings already have ids calculated as they are needed for heading anchors
+		this.id = (tagOrGroup as MarkdownHeading).id || type + '/' + safeSlugify(tagOrGroup.name);
+		this.type = type;
+		this.name = tagOrGroup['x-displayName'] || tagOrGroup.name;
+		this.level = (tagOrGroup as MarkdownHeading).level || 1;
 
-    const items = (tagOrGroup as MarkdownHeading).items;
-    if (items && items.length) {
-      this.description = MarkdownRenderer.getTextBeforeHading(this.description, items[0].name);
-    }
+		// remove sections from markdown, same as in ApiInfo
+		this.description = tagOrGroup.description || '';
 
-    this.parent = parent;
-    this.externalDocs = (tagOrGroup as OpenAPITag).externalDocs;
+		this.extendedDescription = tagOrGroup.extendedDescription || '';
 
-    // groups are active (expanded) by default
-    if (this.type === 'group') {
-      this.expanded = true;
-    }
-  }
+		const items = (tagOrGroup as MarkdownHeading).items;
+		if (items && items.length) {
+			this.description = MarkdownRenderer.getTextBeforeHading(this.description, items[0].name);
+		}
 
-  @action
-  activate() {
-    this.active = true;
-  }
+		this.parent = parent;
+		this.externalDocs = (tagOrGroup as OpenAPITag).externalDocs;
 
-  @action
-  expand() {
-    if (this.parent) {
-      this.parent.expand();
-    }
-    this.expanded = true;
-  }
+		// groups are active (expanded) by default
+		if (this.type === 'group') {
+			this.expanded = true;
+		}
+	}
 
-  @action
-  collapse() {
-    // disallow collapsing groups
-    if (this.type === 'group') {
-      return;
-    }
-    this.expanded = false;
-  }
+	@action
+	activate() {
+		this.active = true;
+	}
 
-  @action
-  deactivate() {
-    this.active = false;
-  }
+	@action
+	expand() {
+		if (this.parent) {
+			this.parent.expand();
+		}
+		this.expanded = true;
+	}
+
+	@action
+	collapse() {
+		// disallow collapsing groups
+		if (this.type === 'group') {
+			return;
+		}
+		this.expanded = false;
+	}
+
+	@action
+	deactivate() {
+		this.active = false;
+	}
 }

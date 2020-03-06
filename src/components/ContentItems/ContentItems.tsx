@@ -1,24 +1,20 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import { ApiInfo } from '../ApiInfo/ApiInfo';
+import { ApiInfo } from '../ApiInfo/';
 import { AppStore } from '../../services';
 
 import { ExternalDocumentation } from '../ExternalDocumentation/ExternalDocumentation';
 import { AdvancedMarkdown } from '../Markdown/AdvancedMarkdown';
 
-import { H1, H2, MiddlePanel, Row, Section, ShareLink} from '../../common-elements';
+import { H1, H2, MiddlePanelInner, Row, Section, ShareLink } from '../../common-elements';
 import { ContentItemModel } from '../../services/MenuBuilder';
 import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
 
-
 @observer
-export class ContentItems extends React.Component<
-  { items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore },
-  IYoState
-> {
+export class ContentItems extends React.Component<{ items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore }, IYoState> {
   constructor(props) {
     super(props);
 
@@ -34,7 +30,13 @@ export class ContentItems extends React.Component<
         for (let j = 0; j < this.props.items[i].items.length; j++) {
           tempItems.push(this.props.items[i].items[j]);
         }
-      } else {
+      }
+      else {
+
+        if (this.props.items[i].id === "section/Authentication") {
+          this.props.items[i + 1].description = this.props.items[i].description + "" + this.props.items[i + 1].description;
+          i++;
+        }
         tempItems.push(this.props.items[i]);
       }
     }
@@ -60,6 +62,10 @@ export class ContentItems extends React.Component<
     if (props.item.type === 'operation') {
       item = props.item.parent;
     }
+    // Fix for openapi.yaml file containing section inside of tag
+    if (props.item.type === 'section' && props.item.parent != undefined && props.item.parent.type === 'tag') {
+      item = props.item.parent;
+    }
 
     let index = this.getItemIndex(item);
     let isFirstItem = false;
@@ -71,24 +77,26 @@ export class ContentItems extends React.Component<
     if (index + 1 === this.state.items.length) {
       isLastItem = true;
     }
-    this.setState({
-      index: index,
-      isLastItem: isLastItem,
-      isFirstItem: isFirstItem,
-      sectionsCount: this.getNextSectionsCount(index, this.state.items),
-    });
+    this.setState({ index: index, isLastItem: isLastItem, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(index, this.state.items) })
   }
 
-  getItemIndex = item => {
+  getItemIndex = (item) => {
     let index = 0;
     for (let i = 0; i < this.state.items.length; i++) {
       if (item.id === this.state.items[i].id) {
         break;
       }
+      if (item.parent != undefined) {
+        for (let j = 0; j < item.parent.items.length; j++) {
+          if (item.id === item.parent.items[j].id) {
+            return index;
+          }
+        }
+      }
       index++;
     }
     return index;
-  };
+  }
 
   getNextSectionsCount = (currentCount, items) => {
     let multipleSections = 0;
@@ -97,27 +105,29 @@ export class ContentItems extends React.Component<
       for (let i = currentCount; i < items.length; i++) {
         if (items[i + 1].type === 'section') {
           multipleSections++;
-        } else {
+        }
+        else {
           break;
         }
       }
     }
     return multipleSections;
-  };
+  }
 
-  getPrevSectionsCount = currentCount => {
+  getPrevSectionsCount = (currentCount) => {
     let multipleSections = 0;
     if (!this.state.isFirstItem) {
       for (let i = currentCount; i > 0; i--) {
         if (this.state.items[i - 1].type === 'section') {
           multipleSections++;
-        } else {
+        }
+        else {
           break;
         }
       }
     }
     return multipleSections;
-  };
+  }
 
   prevPage = () => {
     let currentCount = 0;
@@ -132,13 +142,8 @@ export class ContentItems extends React.Component<
     if (currentCount === 0) {
       isFirstItem = true;
     }
-    this.setState({
-      index: currentCount,
-      isLastItem: false,
-      isFirstItem: isFirstItem,
-      sectionsCount: this.getNextSectionsCount(currentCount, this.state.items),
-    });
-  };
+    this.setState({ index: currentCount, isLastItem: false, isFirstItem: isFirstItem, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
+  }
 
   nextPage = () => {
     let currentCount = 0;
@@ -154,34 +159,24 @@ export class ContentItems extends React.Component<
       isLastItem = true;
     }
 
-    this.setState({
-      index: currentCount,
-      isLastItem: isLastItem,
-      isFirstItem: false,
-      sectionsCount: this.getNextSectionsCount(currentCount, this.state.items),
-    });
-  };
+    this.setState({ index: currentCount, isLastItem: isLastItem, isFirstItem: false, sectionsCount: this.getNextSectionsCount(currentCount, this.state.items) })
+  }
 
   createSections = () => {
     let sections: JSX.Element[] = [];
     for (let i = 0; i < this.state.sectionsCount; i++) {
-      sections.push(
-        <ContentItem
-          item={this.state.items[this.state.index + i]}
-          key={this.state.items[this.state.index + i].id}
-        />,
-      );
+      sections.push(<ContentItem item={this.state.items[this.state.index + i]} key={this.state.items[this.state.index + i].id} />);
     }
     return sections;
-  };
+  }
 
   getNextPageName = () => {
     let nextCount = this.state.index + 1;
     if (this.state.sectionsCount > 0) {
       nextCount = nextCount + this.state.sectionsCount - 1;
     }
-    return this.state.items[nextCount].name;
-  };
+    return this.state.items[nextCount].name;;
+  }
 
   getPrevPageName = () => {
     let prevCount = this.state.index - 1;
@@ -190,36 +185,25 @@ export class ContentItems extends React.Component<
       prevCount = prevCount - prevSectionsCount + 1;
     }
     return this.state.items[prevCount].name;
-  };
+  }
 
   render() {
     const items = this.state.items;
     if (items.length === 0) {
       return null;
     }
-    console.log(items);
+
+    console.log("items", items);
 
     return (
       <div>
-        {!this.state.isFirstItem ? (
-          <BackButton onClick={this.prevPage}>
-            ← Back to <b>{this.getPrevPageName()}</b>
-          </BackButton>
-        ) : null}
+        {!this.state.isFirstItem ? <BackButton onClick={this.prevPage}>←  Back to <b>{this.getPrevPageName()}</b></BackButton> : null}
 
         {this.state.isFirstItem ? <ApiInfo store={this.props.store}></ApiInfo> : null}
 
-        {this.state.sectionsCount > 0 ? (
-          this.createSections()
-        ) : (
-          <ContentItem item={items[this.state.index]} key={items[this.state.index].id} />
-        )}
+        {this.state.sectionsCount > 0 ? this.createSections() : <ContentItem item={items[this.state.index]} key={items[this.state.index].id} />}
 
-        {!this.state.isLastItem ? (
-          <NextButton onClick={this.nextPage}>
-            → Next to <b>{this.getNextPageName()}</b>
-          </NextButton>
-        ) : null}
+        {!this.state.isLastItem ? <NextButton onClick={this.nextPage}>→ Next to <b>{this.getNextPageName()}</b></NextButton> : null}
       </div>
     );
   }
@@ -236,13 +220,13 @@ export interface IYoState {
   sectionsCount: number;
 }
 
-
 @observer
 export class ContentItem extends React.Component<ContentItemProps> {
   render() {
     const item = this.props.item;
     let content;
     const { type } = item;
+
     switch (type) {
       case 'group':
         content = null;
@@ -271,32 +255,32 @@ export class ContentItem extends React.Component<ContentItemProps> {
   }
 }
 
-const middlePanelWrap = component => <MiddlePanel compact={true}>{component}</MiddlePanel>;
+const middlePanelWrap = component => <MiddlePanelInner compact={true}>{component}</MiddlePanelInner>;
 
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
   render() {
-    const { name, description, externalDocs, level, extendedDescription } = this.props.item as GroupModel;
-
+    const { name, description, extendedDescription, externalDocs, level } = this.props.item as GroupModel;
 
     const Header = level === 2 ? H2 : H1;
+
     return (
       <>
         <Row>
-          <MiddlePanel compact={false}>
+          <MiddlePanelInner compact={false}>
             <Header>
               <ShareLink to={this.props.item.id} />
               {name}
-
             </Header>
-          </MiddlePanel>
+          </MiddlePanelInner>
         </Row>
-        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} extendedDescription={extendedDescription}/>
+
+        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} extendedDescription={extendedDescription || ''} />
         {externalDocs && (
           <Row>
-            <MiddlePanel>
+            <MiddlePanelInner>
               <ExternalDocumentation externalDocs={externalDocs} />
-            </MiddlePanel>
+            </MiddlePanelInner>
           </Row>
         )}
       </>
@@ -309,10 +293,6 @@ export class OperationItem extends React.Component<{
   item: OperationModel;
 }> {
   render() {
-    return (
-
-          <Operation operation={this.props.item} />
-
-    )
+    return <Operation operation={this.props.item} />;
   }
 }

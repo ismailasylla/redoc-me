@@ -40,7 +40,6 @@ export class MenuBuilder {
   ): ContentItemModel[] {
     const spec = parser.spec;
 
-    console.log(spec);
     const items: ContentItemModel[] = [];
     const tagsMap = MenuBuilder.getTagsWithOperations(spec);
     items.push(...MenuBuilder.addMarkdownItems(spec.info.description || '', undefined, 1, options));
@@ -66,6 +65,13 @@ export class MenuBuilder {
   ): ContentItemModel[] {
     const renderer = new MarkdownRenderer(options);
     const headings = renderer.extractHeadings(description || '');
+
+    if (headings.length && parent && parent.description) {
+      parent.description = MarkdownRenderer.getTextBeforeHading(
+        parent.description,
+        headings[0].name,
+      );
+    }
 
     const mapHeadingsDeep = (_parent, items, depth = 1) =>
       items.map(heading => {
@@ -199,7 +205,6 @@ export class MenuBuilder {
    */
   static getTagsWithOperations(spec: OpenAPISpec): TagsInfoMap {
     const tags: TagsInfoMap = {};
-    console.log(tags);
     for (const tag of spec.tags || []) {
       tags[tag.name] = { ...tag, operations: [] };
     }

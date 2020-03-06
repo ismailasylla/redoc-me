@@ -9,89 +9,93 @@ import { MenuItems } from './MenuItems';
 import { MenuItemLabel, MenuItemLi, MenuItemTitle, OperationBadge } from './styled.elements';
 
 export interface MenuItemProps {
-	item: IMenuItem;
-	onActivate?: (item: IMenuItem) => void;
-	withoutChildren?: boolean;
+  item: IMenuItem;
+  onActivate?: (item: IMenuItem) => void;
+  withoutChildren?: boolean;
 }
 
 @observer
 export class MenuItem extends React.Component<MenuItemProps> {
-	ref = React.createRef<HTMLLabelElement>();
+  ref = React.createRef<HTMLLabelElement>();
 
-	activate = (evt: React.MouseEvent<HTMLElement>) => {
-		this.props.onActivate!(this.props.item);
-		evt.stopPropagation();
-	};
+  activate = (evt: React.MouseEvent<HTMLElement>) => {
+    this.props.onActivate!(this.props.item);
+    evt.stopPropagation();
+  };
 
-	componentDidMount() {
-		this.scrollIntoViewIfActive();
-	}
+  componentDidMount() {
+    this.scrollIntoViewIfActive();
+  }
 
-	componentDidUpdate() {
-		this.scrollIntoViewIfActive();
-	}
+  componentDidUpdate() {
+    this.scrollIntoViewIfActive();
+  }
 
-	scrollIntoViewIfActive() {
-		if (this.props.item.active && this.ref.current) {
-			this.ref.current.scrollIntoViewIfNeeded();
-		}
-	}
+  scrollIntoViewIfActive() {
+    if (this.props.item.active && this.ref.current) {
+      this.ref.current.scrollIntoViewIfNeeded();
+    }
+  }
 
-	render() {
-		const { item, withoutChildren } = this.props;
-		return (
-			<div>
-				<MenuItemLi onClick={this.activate} depth={item.depth} data-item-id={item.id}>
-					{item.type === 'operation' ? (
-						<OperationMenuItemContent {...this.props} item={item as OperationModel} />
-					) : (
-						<MenuItemLabel depth={item.depth} active={item.active} type={item.type} ref={this.ref}>
-							<MenuItemTitle title={item.name}>
-								{item.name}
-								{this.props.children}
-							</MenuItemTitle>
-							{(item.depth > 0 &&
-							item.items.length > 0 && <ShelfIcon float={'right'} direction={item.expanded ? 'down' : 'right'} />) ||
-								null}
-						</MenuItemLabel>
-					)}
-					{!withoutChildren &&
-					item.items &&
-					item.items.length > 0 && (
-						<MenuItems expanded={item.expanded} items={item.items} onActivate={this.props.onActivate} />
-					)}
-				</MenuItemLi>
-			</div>
-		);
-	}
+  render() {
+    const { item, withoutChildren } = this.props;
+    return (
+      <MenuItemLi onClick={this.activate} depth={item.depth} data-item-id={item.id}>
+        {item.type === 'operation' ? (
+          <OperationMenuItemContent {...this.props} item={item as OperationModel} />
+        ) : (
+          <MenuItemLabel depth={item.depth} active={item.active} type={item.type} ref={this.ref}>
+            <MenuItemTitle title={item.name}>
+              {item.name}
+              {this.props.children}
+            </MenuItemTitle>
+            {(item.depth > 0 && item.items.length > 0 && (
+              <ShelfIcon float={'right'} direction={item.expanded ? 'down' : 'right'} />
+            )) ||
+              null}
+          </MenuItemLabel>
+        )}
+        {!withoutChildren && item.items && item.items.length > 0 && (
+          <MenuItems
+            expanded={item.expanded}
+            items={item.items}
+            onActivate={this.props.onActivate}
+          />
+        )}
+      </MenuItemLi>
+    );
+  }
 }
 
 export interface OperationMenuItemContentProps {
-	item: OperationModel;
+  item: OperationModel;
 }
 
 @observer
 export class OperationMenuItemContent extends React.Component<OperationMenuItemContentProps> {
-	ref = React.createRef<HTMLLabelElement>();
+  ref = React.createRef<HTMLLabelElement>();
 
-	componentDidUpdate() {
-		if (this.props.item.active && this.ref.current) {
-			this.ref.current.scrollIntoViewIfNeeded();
-		}
-	}
+  componentDidUpdate() {
+    if (this.props.item.active && this.ref.current) {
+      this.ref.current.scrollIntoViewIfNeeded();
+    }
+  }
 
-	render() {
-		const { item } = this.props;
-		return (
-      <>
-			<MenuItemLabel depth={item.depth} active={item.active} deprecated={item.deprecated} ref={this.ref}>
-				<OperationBadge type={item.httpVerb}>{shortenHTTPVerb(item.httpVerb)}</OperationBadge>
-				<MenuItemTitle width="calc(100% - 38px)">
-					{item.name}
-					{this.props.children}
-				</MenuItemTitle>
-			</MenuItemLabel>
-      </>
-		);
-	}
+  render() {
+    const { item } = this.props;
+    return (
+      <MenuItemLabel
+        depth={item.depth}
+        active={item.active}
+        deprecated={item.deprecated}
+        ref={this.ref}
+      >
+        <OperationBadge type={item.httpVerb}>{shortenHTTPVerb(item.httpVerb)}</OperationBadge>
+        <MenuItemTitle width="calc(100% - 38px)">
+          {item.name}
+          {this.props.children}
+        </MenuItemTitle>
+      </MenuItemLabel>
+    );
+  }
 }

@@ -15,6 +15,31 @@ export const MiddlePanel =
   `};
 `;
 
+export const MiddlePanelInner =
+	styled.div <
+	{ compact: boolean } >
+	`
+  width: 100%;
+  padding: 0 ${(props) => props.theme.spacing.sectionHorizontal}px;
+
+  ${({ compact, theme }) =>
+		media.lessThan('medium', true)`
+    width: 100%;
+    padding: ${`${compact ? 0 : theme.spacing.sectionVertical}px ${theme.spacing.sectionHorizontal}px`};
+  `};
+`;
+
+export const MiddlePanelExtended =
+	styled.div <
+	{ compact: boolean } >
+	`
+  width: calc(100% - ${(props) => props.theme.rightPanel.width});
+  ${media.lessThan('medium', true)`
+    width: 100%;
+    padding: 30px 0px;
+  `};
+`;
+
 export const Section =
 	styled.div.attrs((props) => ({
 		[SECTION_ATTR]: props.id
@@ -65,6 +90,11 @@ export const RightPanel = styled.div`
 
 export const DarkRightPanel = styled(RightPanel)`
   background-color: ${(props) => props.theme.rightPanel.backgroundColor};
+`;
+
+export const DarkRightPanelExtended = styled(RightPanel)`
+  background-color: ${(props) => props.theme.rightPanel.backgroundColor};
+  padding: 0px 0px;
 `;
 
 export const Row = styled.div`

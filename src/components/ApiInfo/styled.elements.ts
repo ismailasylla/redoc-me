@@ -38,7 +38,6 @@ export const BackButton = styled.a`
 		position: 'center';
 		margin-left: 200px;
 	}
-
 	${extensionsHook('BackButton')};
 `;
 
@@ -50,7 +49,6 @@ export const NextButton = styled.a`
 	margin-bottom: 1.5em;
 	margin-top: 1.5em;
 	padding: 4px 8px 4px 10px;
-
 	display: inline-block;
 	text-decoration: none;
 	cursor: pointer;
@@ -67,21 +65,6 @@ export const NextButton = styled.a`
 		position: 'center';
 		margin-left: 270px;
 	}
-
-	${extensionsHook('NextButton')};
-`;
-export const ShowInfo = styled.a`
-	border: 1px solid ${(props) => props.theme.colors.primary.main};
-	color: ${(props) => props.theme.colors.primary.main};
-	font-weight: normal;
-	margin-left: 0.5em;
-	margin-bottom: 1.5em;
-	padding: 4px 8px 4px;
-	padding-bottom: 10px;
-	display: inline-block;
-	text-decoration: none;
-	cursor: pointer;
-
 	${extensionsHook('NextButton')};
 `;
 

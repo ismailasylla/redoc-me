@@ -2,19 +2,17 @@ import * as React from 'react';
 
 import { SecuritySchemesModel } from '../../services/models';
 
-import { H2, MiddlePanel, Row, Section, ShareLink, DarkRightPanel } from '../../common-elements';
+import { H2, MiddlePanel, Row, Section, ShareLink } from '../../common-elements';
 import { OpenAPISecurityScheme } from '../../types';
 import { titleize } from '../../utils/helpers';
 import { Markdown } from '../Markdown/Markdown';
 import { StyledMarkdownBlock } from '../Markdown/styled.elements';
-import { margin } from 'polished';
-// import Mermaid from '../Mermaid/Mermaid';
 
 const AUTH_TYPES = {
   oauth2: 'OAuth2',
   apiKey: 'API Key',
   http: 'HTTP',
-  openIdConnect: 'Open ID Connect'
+  openIdConnect: 'Open ID Connect',
 };
 
 export interface OAuthFlowProps {
@@ -22,9 +20,6 @@ export interface OAuthFlowProps {
   flow: OpenAPISecurityScheme['flows'][keyof OpenAPISecurityScheme['flows']];
 }
 
-const textColor = {
-  color:'black'
-}
 export class OAuthFlow extends React.PureComponent<OAuthFlowProps> {
   render() {
     const { type, flow } = this.props;
@@ -46,7 +41,7 @@ export class OAuthFlow extends React.PureComponent<OAuthFlowProps> {
           ) : null}
           {flow!.refreshUrl && (
             <div>
-              <strong> Refresh URL:..... </strong>
+              <strong> Refresh URL: </strong>
               {flow!.refreshUrl}
             </div>
           )}
@@ -54,7 +49,7 @@ export class OAuthFlow extends React.PureComponent<OAuthFlowProps> {
             <strong> Scopes: </strong>
           </div>
           <ul>
-            {Object.keys(flow!.scopes || {}).map((scope) => (
+            {Object.keys(flow!.scopes || {}).map(scope => (
               <li key={scope}>
                 <code>{scope}</code> - <Markdown inline={true} source={flow!.scopes[scope] || ''} />
               </li>
@@ -72,7 +67,7 @@ export interface SecurityDefsProps {
 
 export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
   render() {
-    return this.props.securitySchemes.schemes.map((scheme) => (
+    return this.props.securitySchemes.schemes.map(scheme => (
       <Section id={scheme.sectionId} key={scheme.id}>
         <Row>
           <MiddlePanel>
@@ -80,62 +75,50 @@ export class SecurityDefs extends React.PureComponent<SecurityDefsProps> {
               <ShareLink to={scheme.sectionId} />
               {scheme.id}
             </H2>
-            {/* <Markdown source={scheme.description || ''} />
-            <Mermaid
-              chart={`graph LR
-              A[Hard edge] -->|Link text| B(Round edge)
-              B --> C{Decision}
-              C -->|One| D[Result one]
-              C -->|Two| E[Result two]
-
-              `}
-            /> */}
-            </MiddlePanel>
-            <DarkRightPanel>
-          <StyledMarkdownBlock>
-            <table className="security-details">
-              <tbody style={textColor}>
-                <tr>
-                  <th> Security Scheme Type </th>
-                  <td> {AUTH_TYPES[scheme.type] || scheme.type} </td>
-                </tr>
-                {scheme.apiKey ? (
+            <Markdown source={scheme.description || ''} />
+            <StyledMarkdownBlock>
+              <table className="security-details">
+                <tbody>
                   <tr>
-                    <th> {titleize(scheme.apiKey.in || '')} parameter name:</th>
-                    <td> {scheme.apiKey.name} </td>
+                    <th> Security Scheme Type </th>
+                    <td> {AUTH_TYPES[scheme.type] || scheme.type} </td>
                   </tr>
-                ) : scheme.http ? (
-                  [
-                    <tr key="scheme">
-                      <th> HTTP Authorization Scheme </th>
-                      <td> {scheme.http.scheme} </td>
-                    </tr>,
-                    scheme.http.scheme === 'bearer' &&
-                    scheme.http.bearerFormat && (
-                      <tr key="bearer">
-                        <th> Bearer format </th>
-                        <td> "{scheme.http.bearerFormat}" </td>
-                      </tr>
-                    )
-                  ]
-                ) : scheme.openId ? (
-                  <tr>
-                    <th> Connect URL </th>
-                    <td>
-                      <a target="_blank" href={scheme.openId.connectUrl}>
-                        {scheme.openId.connectUrl}
-                      </a>
-                    </td>
-                  </tr>
-                ) : scheme.flows ? (
-                  Object.keys(scheme.flows).map((type) => (
-                    <OAuthFlow key={type} type={type} flow={scheme.flows[type]} />
-                  ))
-                ) : null}
-              </tbody>
-            </table>
-          </StyledMarkdownBlock>
-            </DarkRightPanel>
+                  {scheme.apiKey ? (
+                    <tr>
+                      <th> {titleize(scheme.apiKey.in || '')} parameter name:</th>
+                      <td> {scheme.apiKey.name} </td>
+                    </tr>
+                  ) : scheme.http ? (
+                    [
+                      <tr key="scheme">
+                        <th> HTTP Authorization Scheme </th>
+                        <td> {scheme.http.scheme} </td>
+                      </tr>,
+                      scheme.http.scheme === 'bearer' && scheme.http.bearerFormat && (
+                        <tr key="bearer">
+                          <th> Bearer format </th>
+                          <td> "{scheme.http.bearerFormat}" </td>
+                        </tr>
+                      ),
+                    ]
+                  ) : scheme.openId ? (
+                    <tr>
+                      <th> Connect URL </th>
+                      <td>
+                        <a target="_blank" href={scheme.openId.connectUrl}>
+                          {scheme.openId.connectUrl}
+                        </a>
+                      </td>
+                    </tr>
+                  ) : scheme.flows ? (
+                    Object.keys(scheme.flows).map(type => (
+                      <OAuthFlow key={type} type={type} flow={scheme.flows[type]} />
+                    ))
+                  ) : null}
+                </tbody>
+              </table>
+            </StyledMarkdownBlock>
+          </MiddlePanel>
         </Row>
       </Section>
     ));

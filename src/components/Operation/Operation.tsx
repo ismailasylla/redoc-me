@@ -27,49 +27,51 @@ const OperationRow = styled(Row)`
   overflow: hidden;
 `;
 
-const Description = styled.div`margin-bottom: ${({ theme }) => theme.spacing.unit * 6}px;`;
+const Description = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.unit * 6}px;
+`;
 
 export interface OperationProps {
-	operation: OperationType;
+  operation: OperationType;
 }
 
 @observer
 export class Operation extends React.Component<OperationProps> {
-	render() {
-		const { operation } = this.props;
+  render() {
+    const { operation } = this.props;
 
-		const { name: summary, description, deprecated, externalDocs } = operation;
-		const hasDescription = !!(description || externalDocs);
+    const { name: summary, description, deprecated, externalDocs } = operation;
+    const hasDescription = !!(description || externalDocs);
 
-		return (
-			<OptionsContext.Consumer>
-				{(options) => (
-					<OperationRow>
-						<MiddlePanel>
-							<H2>
-								<ShareLink to={operation.id} />
-								{summary} {deprecated && <Badge type="warning"> Deprecated </Badge>}
-							</H2>
-							{options.pathInMiddlePanel && <Endpoint operation={operation} inverted={true} />}
-							{hasDescription && (
-								<Description>
-									{description !== undefined && <Markdown source={description} />}
-									{externalDocs && <ExternalDocumentation externalDocs={externalDocs} />}
-								</Description>
-							)}
-							<Extensions extensions={operation.extensions} />
-							<SecurityRequirements securities={operation.security} />
-							<Parameters parameters={operation.parameters} body={operation.requestBody} />
-							<ResponsesList responses={operation.responses} />
-						</MiddlePanel>
-						<DarkRightPanel>
-							{!options.pathInMiddlePanel && <Endpoint operation={operation} />}
-							<RequestSamples operation={operation} />
-							<ResponseSamples operation={operation} />
-						</DarkRightPanel>
-					</OperationRow>
-				)}
-			</OptionsContext.Consumer>
-		);
-	}
+    return (
+      <OptionsContext.Consumer>
+        {options => (
+          <OperationRow>
+            <MiddlePanel>
+              <H2>
+                <ShareLink to={operation.id} />
+                {summary} {deprecated && <Badge type="warning"> Deprecated </Badge>}
+              </H2>
+              {options.pathInMiddlePanel && <Endpoint operation={operation} inverted={true} />}
+              {hasDescription && (
+                <Description>
+                  {description !== undefined && <Markdown source={description} />}
+                  {externalDocs && <ExternalDocumentation externalDocs={externalDocs} />}
+                </Description>
+              )}
+              <Extensions extensions={operation.extensions} />
+              <SecurityRequirements securities={operation.security} />
+              <Parameters parameters={operation.parameters} body={operation.requestBody} />
+              <ResponsesList responses={operation.responses} />
+            </MiddlePanel>
+            <DarkRightPanel>
+              {!options.pathInMiddlePanel && <Endpoint operation={operation} />}
+              <RequestSamples operation={operation} />
+              <ResponseSamples operation={operation} />
+            </DarkRightPanel>
+          </OperationRow>
+        )}
+      </OptionsContext.Consumer>
+    );
+  }
 }
