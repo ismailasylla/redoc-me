@@ -144,6 +144,8 @@ export default class ComboBox extends React.Component<ComboBoxProps, ComboBoxSta
 
   handleTryItClick = () => {
     this.handleSelect(this.state.value);
+    location.reload();
+
   };
 
   handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
