@@ -40,6 +40,7 @@ const ComboBoxWrap = styled.div`
   width: 100%;
   max-width: 500px;
   display: flex;
+  margin-right: 300px;
 `;
 
 const Input = styled.input`

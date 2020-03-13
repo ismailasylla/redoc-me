@@ -64,7 +64,6 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
       cors,
     };
 
-
   }
 
   handleChange = (url: string) => {
@@ -144,26 +143,15 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
                     onChange={this.handleChange}
                     value={specUrl === DEFAULT_SPEC ? '' : specUrl}
                   />
-                  <CorsCheckbox title="Use CORS proxy">
-                    <input id="cors_checkbox" type="checkbox" onChange={this.toggleCors} checked={cors} />
-                    <label htmlFor="cors_checkbox">CORS</label>
-                  </CorsCheckbox>
                 </ControlsContainer>
-                <iframe
-                  src="https://ghbtns.com/github-btn.html?user=Redocly&amp;repo=redoc&amp;type=star&amp;count=true&amp;size=large"
-                  frameBorder="0"
-                  scrolling="0"
-                  width="150px"
-                  height="30px"
-                />
               </Heading>
             <RedocWrap className="redoc-wrap">
               <StickyResponsiveSidebar menu={menu} className="menu-content">
-                <a href=".">
+                {/* <a href=".">
                 <img style={{ height: '100px', width: '250px', margin: '5px', cursor: 'pointer' }}
                 src="https://raw.githubusercontent.com/Redocly/redoc/master/docs/images/redoc-logo.png"
                   />
-                </a>
+                </a> */}
                 <ApiLogo info={spec.info} />
                 {(!options.disableSearch && (
                   <SearchBox
