@@ -19,12 +19,14 @@ const OperationRow = styled(Row)`
 
 export interface AdvancedMarkdownProps extends BaseMarkdownProps {
   extendedDescription: string;
+  links:string;
   htmlWrap?: (part: JSX.Element) => JSX.Element;
 }
 
 export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
   render() {
     const { extendedDescription } = this.props;
+    const { links } = this.props;
     var isExtendedDescription = false;
 
     if (extendedDescription.length > 0) {
@@ -43,11 +45,14 @@ export class AdvancedMarkdown extends React.Component<AdvancedMarkdownProps> {
 
         </MiddlePanelExtended>
 
-        {isExtendedDescription ? <DarkRightPanelExtended><OptionsConsumer>
-          {options => (
-            <StoreConsumer>{store => this.renderExtendedWithOptionsAndStore(options, store)}</StoreConsumer>
-          )}
-        </OptionsConsumer></DarkRightPanelExtended> : null}
+        {isExtendedDescription ?
+          <DarkRightPanelExtended>
+              <OptionsConsumer>
+              {options => (
+                <StoreConsumer>{store => this.renderExtendedWithOptionsAndStore(options, store)}</StoreConsumer>
+              )}
+            </OptionsConsumer>
+          </DarkRightPanelExtended> : null}
 
       </OperationRow>
     );

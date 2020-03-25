@@ -260,7 +260,7 @@ const middlePanelWrap = component => <MiddlePanelInner compact={true}>{component
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
   render() {
-    const { name, description, extendedDescription, externalDocs, level } = this.props.item as GroupModel;
+    const { name, description, extendedDescription, externalDocs, level, links } = this.props.item as GroupModel;
 
     const Header = level === 2 ? H2 : H1;
 
@@ -275,7 +275,7 @@ export class SectionItem extends React.Component<ContentItemProps> {
           </MiddlePanelInner>
         </Row>
 
-        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} extendedDescription={extendedDescription || ''} />
+        <AdvancedMarkdown source={description || ''} htmlWrap={middlePanelWrap} extendedDescription={extendedDescription || ''} links={links || ''} />
         {externalDocs && (
           <Row>
             <MiddlePanelInner>

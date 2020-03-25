@@ -170,7 +170,7 @@ export class Redoc extends React.Component<RedocProps, RedocState> {
                   index={0}
                   item={this.state.item}
                   store={store}
-                /> */}
+                />
               </ApiContentWrap>
               <BackgroundStub />
             </RedocWrap>

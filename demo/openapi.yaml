@@ -1,5 +1,6 @@
 openapi: 3.0.2
 
+
 ### Changes 2019/10/08
 ## - Correlation-ID header
 ##   - Added Correlation-ID header component
@@ -19,6 +20,7 @@ openapi: 3.0.2
 ##
 ## - Added Authorization header to all endpoints.
 
+
 ###### Review Questions
 ## /token
 ##  - Do we need an authorization header here?  is this for
@@ -33,12 +35,12 @@ openapi: 3.0.2
 ## Descriptions for all fields
 ## Spell out attribute names
 ## Error codes that we need to spell out:
-# 400 yes
-# 401 yes
-# 403 forbidden yes
-# 404 Yes not found?
-# 409 Conflict - yes if applicable
-## Review error responses in the backend and ensure complete coverage
+  # 400 yes
+  # 401 yes
+  # 403 forbidden yes
+  # 404 Yes not found?
+  # 409 Conflict - yes if applicable
+  ## Review error responses in the backend and ensure complete coverage
 
 ### Work with Akhil and Chethan to nail down Correlation-ID Handling in
 ##  spec, proxy, backend, etc.
@@ -47,6 +49,10 @@ openapi: 3.0.2
 ##  the invoice is already cancel
 
 ### update field for /invoices/:id/send-email should be a boolean
+
+
+
+
 
 info:
   version: 2.0.0
@@ -144,9 +150,10 @@ info:
 
     You can enable MCC as part of terminal setup. If your terminal is already set up and you would like to enable MCC, please contact your Relationship Manager.
 
+
 tags:
   - name: Authentication
-    extendedDescription: |
+    extendedDescription:  |
       Invoices contains the Quote and Invoice functionality of Billing and Invoicing API.
 
       # The Invoice Object
@@ -285,11 +292,14 @@ servers:
   - url: https://api.elavon.com/ecomm/billing/v2
     description: Production
 
+
+
 paths:
-  ################
-  ## Authentication Endpoint
+################
+## Authentication Endpoint
   # "/auth/oauth2/v1/token":
   "/token":
+
     post:
       tags:
         - Auth Token
@@ -326,7 +336,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OAuthToken"
+                $ref: '#/components/schemas/OAuthToken'
         400:
           description: Bad Request - expected Authorization header is missing or empty
           content:
@@ -345,27 +355,30 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorResponse:
-                    type: object
-                    properties:
-                      errorResponseCode:
-                        type: integer
-                        example: 401
-                      errorDescription:
-                        type: string
-                        example: Invalid Credentials
+                  type: object
+                  properties:
+                    errorResponse:
+                      type: object
+                      properties:
+                        errorResponseCode:
+                          type: integer
+                          example: 401
+                        errorDescription:
+                          type: string
+                          example: Invalid Credentials
 
-  ################
-  ## Invoices
+
+
+
+################
+## Invoices
 
   "/invoices":
     summary: All Invoices
     description: This endpoint contains all of the invoices for a Merchant's account.
     parameters:
       - $ref: "#/components/parameters/Authorization"
-    #      - $ref: "#/components/parameters/Correlation-ID"
+#      - $ref: "#/components/parameters/Correlation-ID"
     get:
       tags:
         - Invoices
@@ -376,7 +389,7 @@ paths:
         - oAuth2ClientCredentials: []
 
       parameters:
-        #        - $ref: "#/components/parameters/Correlation-ID"
+#        - $ref: "#/components/parameters/Correlation-ID"
         - $ref: "#/components/parameters/merchantId"
         - name: type
           in: query
@@ -432,11 +445,11 @@ paths:
             type: boolean
 
       responses:
-        "200":
+        '200':
           description: Successful
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -457,13 +470,13 @@ paths:
             schema:
               $ref: "#/components/schemas/Invoice"
       responses:
-        "201":
+        '201':
           description: Created
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
             Location:
-              $ref: "#/components/headers/Location"
+              $ref: '#/components/headers/Location'
           content:
             application/json:
               schema:
@@ -475,7 +488,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/invoice-id"
       - $ref: "#/components/parameters/Authorization"
-    #      - $ref: "#/components/parameters/Correlation-ID"
+#      - $ref: "#/components/parameters/Correlation-ID"
 
     get:
       tags:
@@ -493,11 +506,11 @@ paths:
       parameters:
         - $ref: "#/components/parameters/merchantId"
       responses:
-        "200":
+        '200':
           description: Successful
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -509,7 +522,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/invoice-id"
       - $ref: "#/components/parameters/Authorization"
-    #      - $ref: "#/components/parameters/Correlation-ID"
+#      - $ref: "#/components/parameters/Correlation-ID"
     post:
       tags:
         - Invoices
@@ -535,18 +548,18 @@ paths:
                   description: The User ID of the user that requested the invoice cancelation.
                   example: ipfreely
       responses:
-        "200":
+        '200':
           description: Successful
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
 
   "/invoices/{invoice-id}/send-email":
     summary: Send Invoice by Email
     description: This endpoint manages sending templated emails for an invoice.
     parameters:
       - $ref: "#/components/parameters/Authorization"
-      #      - $ref: "#/components/parameters/Correlation-ID"
+#      - $ref: "#/components/parameters/Correlation-ID"
       - $ref: "#/components/parameters/invoice-id"
 
     post:
@@ -558,7 +571,7 @@ paths:
       security:
         - oAuth2ClientCredentials: []
       parameters:
-        #        - $ref: "#/components/parameters/Correlation-ID"
+#        - $ref: "#/components/parameters/Correlation-ID"
         - $ref: "#/components/parameters/merchantId"
         - name: update
           in: query
@@ -567,21 +580,22 @@ paths:
           schema:
             type: boolean
       responses:
-        "202":
+        '202':
           description: Accepted.
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
 
-  ###########
-  ## Merchants
+
+###########
+## Merchants
 
   "/merchants/{merchant-id}":
     summary: A Merchant
     description: The pieces of information associated with a merchant account. Merchant information factors into other Billing and Invoicing API queries.
     parameters:
       - $ref: "#/components/parameters/Authorization"
-      #      - $ref: "#/components/parameters/Correlation-ID"
+#      - $ref: "#/components/parameters/Correlation-ID"
       - $ref: "#/components/parameters/merchant-id"
 
     get:
@@ -592,23 +606,23 @@ paths:
       operationId: GetMerchant
       security:
         - oAuth2ClientCredentials: []
-      #      parameters:
-      #        - $ref: "#/components/parameters/Correlation-ID"
+#      parameters:
+#        - $ref: "#/components/parameters/Correlation-ID"
       responses:
-        "200":
+        '200':
           description: Successful
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Merchant"
-        "400":
+        '400':
           description: Bad Request - expected Authorization header is missing or empty
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -616,11 +630,11 @@ paths:
                   - $ref: "#/components/schemas/Errors"
                   - example:
                       errorCode: "400"
-        "403":
+        '403':
           description: Not Authorized
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -628,11 +642,11 @@ paths:
                   - $ref: "#/components/schemas/Errors"
                   - example:
                       errorCode: "403"
-        "404":
+        '404':
           description: Not Found
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -640,11 +654,11 @@ paths:
                   - $ref: "#/components/schemas/Errors"
                   - example:
                       errorCode: "404"
-        "500":
+        '500':
           description: Internal Server Error.
           headers:
             Correlation-ID:
-              $ref: "#/components/headers/Correlation-ID"
+              $ref: '#/components/headers/Correlation-ID'
           content:
             application/json:
               schema:
@@ -652,6 +666,7 @@ paths:
                   - $ref: "#/components/schemas/Errors"
                   - example:
                       errorCode: "500"
+
 
 components:
   securitySchemes:
@@ -741,6 +756,7 @@ components:
           - EN
           - FR
 
+
     Pagination-Page:
       name: page
       in: query
@@ -772,6 +788,7 @@ components:
       schema:
         type: string
 
+
   requestBodies:
     InvoiceHeader:
       content:
@@ -794,6 +811,7 @@ components:
     #   required: true
     #   schema:
     #     type: string
+
 
     Errors:
       type: array
@@ -821,7 +839,7 @@ components:
                   type: string
                   description: The reason an error happened.
     PagedList:
-      description: "Base for the PagedListXXX schemas"
+      description: 'Base for the PagedListXXX schemas'
       properties:
         first:
           type: string
@@ -852,15 +870,16 @@ components:
         totalItems:
           type: integer
           format: int32
-          description: "Current page in paged list."
+          description: 'Current page in paged list.'
           readOnly: true
+
 
     TokenRequest:
       type: object
       properties:
         grant_type:
           type: string
-          description: "Grant Type"
+          description: 'Grant Type'
           example: grant_type=client_credentials
 
     Invoice:
@@ -881,11 +900,11 @@ components:
         summary:
           $ref: "#/components/schemas/InvoiceSummary"
     InvoicePagination:
-      title: "PagedListOfInvoice"
-      description: "Paged list of Invoices"
+      title: 'PagedListOfInvoice'
+      description:  'Paged list of Invoices'
       type: object
       allOf:
-        - $ref: "#/components/schemas/PagedList"
+        - $ref: '#/components/schemas/PagedList'
         - type: object
           properties:
             items:
@@ -941,7 +960,7 @@ components:
             - UNPAID
             - CANCELED
             - ARCHIVED
-          example: "PAID"
+          example: 'PAID'
         invoiceDate:
           type: string
           description: The date an invoice was sent.
@@ -968,7 +987,7 @@ components:
           type: string
           description: The currency for to displaying the invoice.
           pattern: '[\d\D]{3}'
-          example: "USD"
+          example: 'USD'
           minLength: 3
           maxLength: 3
         invoiceNumber:
