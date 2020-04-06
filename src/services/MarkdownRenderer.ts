@@ -5,6 +5,13 @@ import { AppStore } from './AppStore';
 import { RedocNormalizedOptions } from './RedocNormalizedOptions';
 
 const renderer = new marked.Renderer();
+renderer.code = function (code, language){
+  console.log(code);
+  if (language == 'mermaid')
+    return '<div class="mermaid">' + code + '</div>';
+    else return '<pre><code>' + code + '</code></pre>';
+};
+
 
 marked.setOptions({
   renderer,

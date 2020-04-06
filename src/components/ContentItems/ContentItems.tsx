@@ -12,6 +12,7 @@ import { GroupModel, OperationModel } from '../../services/models';
 import { Operation } from '../Operation/Operation';
 import { NextButton } from '../ApiInfo/styled.elements';
 import { BackButton } from '../ApiInfo/styled.elements';
+import  mermaid  from 'mermaid';
 
 @observer
 export class ContentItems extends React.Component<{ items: ContentItemModel[]; item: ContentItemModel; index: number; store: AppStore }, IYoState> {
@@ -259,6 +260,9 @@ const middlePanelWrap = component => <MiddlePanelInner compact={true}>{component
 
 @observer
 export class SectionItem extends React.Component<ContentItemProps> {
+  componentDidMount(){
+    mermaid.contentLoaded();
+  }
   render() {
     const { name, description, extendedDescription, externalDocs, level, links } = this.props.item as GroupModel;
 
