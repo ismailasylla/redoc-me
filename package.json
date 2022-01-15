@@ -141,7 +141,7 @@
     "json-schema-ref-parser": "^6.1.0",
     "lunr": "2.3.8",
     "mark.js": "^8.11.1",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "memoize-one": "~5.1.1",
     "mermaid": "^8.4.8",
     "mobx-react": "^6.1.4",
